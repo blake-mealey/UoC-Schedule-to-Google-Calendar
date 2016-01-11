@@ -167,7 +167,11 @@ function makeEvent(auth, calendarObject, data, callback) {
 		sendNotifications: false,
 		supportsAttachments: false,
 		resource: {
-			summary: data.classInfo.shortName,
+			summary: data.classInfo.shortName + " " + data.classInfo.type,
+			description: "Course Name: " + data.classInfo.name +
+				"\nInstructor: " + data.prof +
+				"\n" + data.classInfo.type + " Number: " + data.classInfo.number +
+				"\nCourse ID: " + data.classInfo.id,
 			location: data.meetingInfo.room,
 			start: {
 				dateTime: "2016-01-" + (10 + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",

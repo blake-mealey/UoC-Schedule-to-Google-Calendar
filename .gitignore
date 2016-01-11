@@ -77,3 +77,11 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+# Secret stuff
+# =========================
+
+# Calendar API Token
+client_secret.json
+client_secret_old.json

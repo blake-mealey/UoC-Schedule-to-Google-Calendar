@@ -2,13 +2,12 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+var calendar = google.calendar('v3');
 
 var SCOPES = ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/calendar'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 		process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
-
-console.log(TOKEN_PATH);
 
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
@@ -129,18 +128,17 @@ function listEvents(auth) {
 }
 
 function app(auth) {
-	makeCalendar(auth, function(calendar) {
-		makeEvent(auth, calendar, "Hello, World!", );
+	makeCalendar(auth, function(calendarObject) {
+		parseClasses(auth, calendarObject);
 	});
 }
 
 function makeCalendar(auth, callback) {
-	var calendar = google.calendar('v3');
 	calendar.calendars.insert({
 		auth: auth,
 		resource: {
 			kind: "calendar#calendar",
-			summary: "Hello, World!"
+			summary: "Winter 2016"
 		}
 	}, function(err, response) {
 		if(err) {
@@ -151,6 +149,114 @@ function makeCalendar(auth, callback) {
 	});
 }
 
-function makeEvent(auth, calendar, data) {
-	
+function makeEvent(auth, calendarObject, data, callback) {
+	var dayNums = {
+		SU: 0,
+		MO: 1,
+		TU: 2,
+		WE: 3,
+		TH: 4,
+		FR: 5,
+		SA: 6
+	}
+
+	calendar.events.insert({
+		auth: auth,
+		calendarId: calendarObject.id,
+		maxAttendees: 1,
+		sendNotifications: false,
+		supportsAttachments: false,
+		resource: {
+			summary: data.classInfo.shortName,
+			location: data.meetingInfo.room,
+			start: {
+				dateTime: "2016-01-" + (10 + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",
+				timeZone: "America/Los_Angeles"
+			},
+			end: {
+				dateTime: "2016-01-" + (10 + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-07:00",
+				timeZone: "America/Los_Angeles"
+			},
+			recurrence: ["RRULE:FREQ=WEEKLY;COUNT=50;WKST=SU;BYDAY=" + data.meetingInfo.days]
+		}
+	}, function(err, response) {
+		if(err) {
+			console.log('Error when making an event: ' + err);
+			return;
+		}
+		callback(response);
+	});
+}
+
+function parseClasses(auth, calendarObject) {
+	var classes = [];
+
+	var lineReader = readline.createInterface({
+		input: fs.createReadStream('data.in')
+	});
+
+	var current;
+	var counter = 0;
+
+	lineReader.on('line', function(line) {
+		switch(counter % 8) {
+			case 0:
+				current = classes.length;
+				var res = line.split("-");
+				var first;
+				if(res[1].length == 3) {
+					first = res[1].substring(0, 1);
+					res[1] = res[1].substring(1);
+				}
+				classes[current] = {
+					classInfo: {
+						type: first == null ? "Lecture" : first == "T" ? "Tutorial" : "Lab",
+						number: res[1],
+						shortName: res[0]
+					},
+					meetingInfo: {}
+				};
+				break;
+			case 1:
+				classes[current].classInfo.id = line.substring(1, line.length - 1);
+				break;
+			case 2:
+				classes[current].classInfo.name = line.substring(0, line.indexOf("(") - 1);
+				break;
+			case 3:
+				var res = line.split(" ");
+				var days = res[0].match(/[A-Z][a-z]/g);
+				if(days != null) {
+					for(var i = 0; i < days.length; i++) {
+						days[i] = days[i].toUpperCase();
+					}
+					classes[current].meetingInfo.days = days;
+				}
+				classes[current].meetingInfo.start = res[1];
+				classes[current].meetingInfo.end = res[3];
+				break;
+			case 4:
+				classes[current].meetingInfo.room = line;
+				break;
+			case 5:
+				classes[current].prof = line;
+				break;
+		}
+		counter++;
+	}).on('pause', function() {
+		lineReader.close();
+
+		console.log(classes);
+
+		index = 0;
+		function nextEvent() {
+			if(index < classes.length) {
+				if(classes[index].meetingInfo.start) {
+					makeEvent(auth, calendarObject, classes[index], nextEvent);
+				}
+				index++;	
+			}
+		}
+		nextEvent();
+	});
 }

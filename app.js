@@ -129,7 +129,18 @@ function listEvents(auth) {
 
 function app(auth) {
 	makeCalendar(auth, function(calendarObject) {
-		parseClasses(auth, calendarObject);
+		parseClasses(auth, calendarObject, function(classes) {
+			index = 0;
+			function nextEvent() {
+				if(index < classes.length) {
+					if(classes[index].meetingInfo.start) {
+						makeEvent(auth, calendarObject, classes[index], nextEvent);
+					}
+					index++;
+				}
+			}
+			nextEvent();
+		});
 	});
 }
 
@@ -172,6 +183,7 @@ function makeEvent(auth, calendarObject, data, callback) {
 				"\nInstructor: " + data.prof +
 				"\n" + data.classInfo.type + " Number: " + data.classInfo.number +
 				"\nCourse ID: " + data.classInfo.id,
+			colorId: data.classInfo.type == "Lecture" ? 1 : 2,
 			location: data.meetingInfo.room,
 			start: {
 				dateTime: "2016-01-" + (10 + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",
@@ -192,7 +204,7 @@ function makeEvent(auth, calendarObject, data, callback) {
 	});
 }
 
-function parseClasses(auth, calendarObject) {
+function parseClasses(auth, calendarObject, callback) {
 	var classes = [];
 
 	var lineReader = readline.createInterface({
@@ -250,17 +262,7 @@ function parseClasses(auth, calendarObject) {
 	}).on('pause', function() {
 		lineReader.close();
 
-		console.log(classes);
-
-		index = 0;
-		function nextEvent() {
-			if(index < classes.length) {
-				if(classes[index].meetingInfo.start) {
-					makeEvent(auth, calendarObject, classes[index], nextEvent);
-				}
-				index++;	
-			}
-		}
-		nextEvent();
+		//console.log(classes);
+		callback(classes);
 	});
 }

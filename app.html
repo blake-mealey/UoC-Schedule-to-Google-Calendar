@@ -7,7 +7,6 @@
 		<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500|Source+Code+Pro:400,500,700' rel='stylesheet' type='text/css'>
 		<link href="css/style.css" rel="stylesheet" type="text/css">
 		<link href="css/app.css" rel="stylesheet" type="text/css">
-		<link href="css/magnificpopup.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
 		<div id="wrapper">
@@ -26,67 +25,13 @@
 							<input type="text" name="title"><br>
 							<h2>Colours:</h2>
 							<h3>Calendar Colour:</h3>
-							<ul class="colorContainer">
-								<li>
-									<label>
-										<input type="radio" name="calendarColor" value="1">
-										<div style="background-color: #3FD1AD;"></div>
-									</label>
-								</li>
-								<li>
-									<label>
-										<input type="radio" name="calendarColor" value="2">
-										<div style="background-color: #D13F81;"></div>
-									</label>
-								</li>
-								<li>
-									<label>
-										<input type="radio" name="calendarColor" value="3">
-										<div style="background-color: #8AD13F;"></div>
-									</label>
-								</li>
+							<ul class="colorContainer" id="calendar">
 							</ul>
 							<h3>Lecture Colour:</h3>
-							<ul class="colorContainer">
-								<li>
-									<label>
-										<input type="radio" name="lectureColor" value="1">
-										<div style="background-color: #3FD1AD;"></div>
-									</label>
-								</li>
-								<li>
-									<label>
-										<input type="radio" name="lectureColor" value="2">
-										<div style="background-color: #D13F81;"></div>
-									</label>
-								</li>
-								<li>
-									<label>
-										<input type="radio" name="lectureColor" value="3">
-										<div style="background-color: #8AD13F;"></div>
-									</label>
-								</li>
+							<ul class="colorContainer" id="event">
 							</ul>
 							<h3>Tutorial/Lab Colour:</h3>
-							<ul class="colorContainer">
-								<li>
-									<label>
-										<input type="radio" name="tutorialColor" value="1">
-										<div style="background-color: #3FD1AD;"></div>
-									</label>
-								</li>
-								<li>
-									<label>
-										<input type="radio" name="tutorialColor" value="2">
-										<div style="background-color: #D13F81;"></div>
-									</label>
-								</li>
-								<li>
-									<label>
-										<input type="radio" name="tutorialColor" value="3">
-										<div style="background-color: #8AD13F;"></div>
-									</label>
-								</li>
+							<ul class="colorContainer" id="event">
 							</ul>
 							<input type="submit" value="Make Calendar">
 						</form>
@@ -99,9 +44,6 @@
 		</div>
 		
 		<script type="text/javascript" src="scripts/jquery-1.11.3.min.js"></script>
-		<script type="text/javascript" src="scripts/imagesetup.js"></script>
-		<script type="text/javascript" src="scripts/smooth_scroll.js"></script>
-		<script type="text/javascript" src="scripts/magnificpopup.js"></script>
-		<script type="text/javascript" src="google-code-prettify/run_prettify.js"></script>
+		<script type="text/javascript" src="scripts/colorpopulator.js"></script>
 	</body>
 </html>

@@ -1,0 +1,104 @@
+.left {
+	width: 50%;
+	float: left;
+	padding-right: 20px;
+}
+
+.right {
+	margin-left: 50%;
+	padding-left: 20px;
+}
+
+.clear {
+	clear: both;
+}
+
+textarea {
+	resize: none;
+	width: 100%;
+	min-height: 470px;
+}
+
+label > input {
+	visibility: hidden;
+	position: absolute;
+}
+
+label > input + div {
+	cursor: pointer;
+	border: 3px solid transparent;
+	width: 12px;
+	height: 12px;
+	border-radius: 5px;
+}
+
+label > input:checked + div {
+	padding: 3px;
+	margin-left: -3px;
+	margin-top: -3px;
+	border: 3px solid rgba(255, 255, 255, .5);
+}
+
+input[type="button"] {
+	margin-top: 43px;
+	padding: 10px;
+	background:none;
+	border:0;
+	outline: none;
+
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.4);
+	box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.4);
+	border-radius: 3px;
+
+	-webkit-transition:all .1s ease-out;
+	-moz-transition:all .1s ease-out;
+	-ms-transition:all .1s ease-out;
+	-o-transition:all .1s ease-out;
+	transition:all .1s ease-out;
+}
+
+input[type="button"]:hover {
+	-webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.4);
+	box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.4);
+}
+
+.colorContainer {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.colorContainer li {
+	float: left;
+}
+
+.colorContainer li label {
+	display: block;
+	padding: 8px;
+}
+
+#submission {
+	width: 100%;
+}
+
+#submission div {
+	display: inline-block;
+}
+
+#error {
+	margin-left: 30px;
+	padding: 20px;
+	background-color: #f44336;
+	color: #FFFFFF;
+	width: auto;
+	opacity: 0;
+
+	-webkit-transition:all .2s ease-out;
+	-moz-transition:all .2s ease-out;
+	-ms-transition:all .2s ease-out;
+	-o-transition:all .2s ease-out;
+	transition:all .2s ease-out;
+}

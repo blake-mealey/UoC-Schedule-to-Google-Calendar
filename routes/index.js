@@ -1,19 +1,46 @@
 var express = require('express');
 var router = express.Router();
 
-var makecalendar = require('./../make-calendar');	// I thought I wouldn't need the ./../ but it doesn't work without it.
+var makecalendar = require('./../make-calendar');
+
+var gauth;
+require('./../google-auth')(function(res) {
+	gauth = res;
+});
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/scheduleapp', function(req, res, next) {
 	res.render('index', { title: 'UofC Schedule to Google Calendar' });
 });
 
+var lastBody;
+
 /* POST to the makecalendar page. */
-router.post('/makecalendar', function(req, res, next) {		// TODO: Put "working..." animation on /makecalendar
-	//res.render('makecalendar', { title: 'Making Calendar' });
-	makecalendar(req.body, function() {
-		//res.redirect(http://calendar.google.com); // new tab?
-		res.redirect('/scheduleapp');	// as well as the above? maybe make the POST to / to start with?
+router.post('/scheduleapp/makecalendar', function(req, res, next) {
+	lastBody = req.body;
+	res.redirect(gauth.url);
+});
+
+/* GET to Google's OAuth callback page */
+router.get('/auth/google/callback', function(req, res) {
+	var code = req.query.code;
+	gauth.client.getToken(code, function(err, token) {
+		if(err) {
+			console.log('Error while trying to retrieve access token', err);
+			return;
+		}
+		gauth.client.credentials = token;
+
+		var thisBody = lastBody;
+		lastBody = null;
+		makecalendar(gauth.client, thisBody, function(result) {
+			if(result.ok) {
+				console.log("Created calendar with no errors.")
+			} else {
+				console.log("Failed to created calendar: " + result.error);
+			}
+			res.redirect('/scheduleapp');
+		});
 	});
 });
 

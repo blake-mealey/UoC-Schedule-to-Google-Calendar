@@ -40,6 +40,8 @@ var colors = {
 	}
 }
 
+var defaults = [7, 1, 2];
+
 var block = "<li id='temp'>" + 
 				"<label>" +
 					"<input type='radio'>" +
@@ -61,7 +63,7 @@ $(document).ready(function() {
 			var input = newBlock.find("input");
 			input.attr("name", "coloroption" + count);
 			input.attr("value", key);
-			if(key == "1") input.prop("checked", true);
+			if(key == defaults[count - 1].toString()) input.prop("checked", true);
 			newBlock.find("div").css("background-color", colors[id][key]);
 		}
 	});

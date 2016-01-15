@@ -9,14 +9,14 @@ require('./../google-auth')(function(res) {
 });
 
 /* GET home page. */
-router.get('/scheduleapp', function(req, res, next) {
+router.get('/', function(req, res, next) {
 	res.render('index', { title: 'UofC Schedule to Google Calendar' });
 });
 
 var lastBody;
 
 /* POST to the makecalendar page. */
-router.post('/scheduleapp/makecalendar', function(req, res, next) {
+router.post('/makecalendar', function(req, res, next) {
 	lastBody = req.body;
 	res.redirect(gauth.url);
 });
@@ -39,7 +39,7 @@ router.get('/auth/google/callback', function(req, res) {
 			} else {
 				console.log("Failed to created calendar: " + result.error);
 			}
-			res.redirect('/scheduleapp');
+			res.redirect('/');
 		});
 	});
 });

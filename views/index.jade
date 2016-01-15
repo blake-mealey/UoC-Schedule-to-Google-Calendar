@@ -3,7 +3,7 @@ extends layout
 block content
 	.page-content
 		h1= title
-		form#formMakeCalendar(name="makecalendar", method="post", action="/scheduleapp/makecalendar")
+		form#formMakeCalendar(name="makecalendar", method="post", action="/makecalendar")
 			.left
 				h2 Course Information
 				textarea#textAreaCourseData(name="coursedata")

@@ -119,8 +119,10 @@ function app(auth, data, callback) {
 			if(!res.ok) { callback(res); return; }
 			calendarObject = res.data;
 
-			index = 0;
-			function nextEvent() {
+			var error;
+			var index = 0;
+			function nextEvent(res) {
+				if(index > 0 && !res.ok) error = res.error;
 				if(index < courses.length) {
 					makeEvent(auth, data.selectsemester, data.coloroption2, data.coloroption3, calendarObject.id, courses[index], nextEvent);
 					index++;
@@ -128,7 +130,8 @@ function app(auth, data, callback) {
 			}
 			nextEvent();
 			callback({
-				ok: true
+				ok: error == null,
+				error: error
 			});
 		});
 	});

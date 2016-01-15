@@ -4,19 +4,21 @@ block content
 	.page-content
 		h1= title
 		form#formMakeCalendar(name="makecalendar", method="post", action="/makecalendar")
-			.left
+			#left
 				h2 Course Information
 				textarea#textAreaCourseData(name="coursedata")
-			.right
+			#right
 				h2 Semester
-				select#selectSemester(name="selectsemester")
-					option(value="none") Select One
-					option(value="fall") Fall
-					option(value="winter") Winter
-					option(value="spring") Spring
-					option(value="summer") Summer
+				.mdl-selectfield
+					select#selectSemester.browser-default(name="selectsemester")
+						option(value="none" disabled selected) Select One
+						option(value="fall") Fall
+						option(value="winter") Winter
+						option(value="spring") Spring
+						option(value="summer") Summer
 				h2 Calendar Name
-				input#inputName(name="calendarname", type="text")
+				.mdl-textfield
+					input#inputName(name="calendarname", type="text")
 				h2 Colours
 				h3 Calendar Colour
 				ul.colorContainer#calendar
@@ -34,6 +36,4 @@ block content
 
 block scripts
 	script(type="text/javascript" src="/javascripts/jquery-1.11.3.min.js")
-	script(type="text/javascript" src="/javascripts/colorPopulator.js")
-	script(type="text/javascript" src="/javascripts/calendarNameSetup.js")
-	script(type="text/javascript" src="/javascripts/errorHandler.js")
+	script(type="text/javascript" src="/javascripts/initializeApp.js")

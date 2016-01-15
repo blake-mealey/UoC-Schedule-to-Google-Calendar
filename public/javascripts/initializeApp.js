@@ -82,7 +82,8 @@ var defaultName = year + " Course Schedule";
 
 var seasons = ["Fall", "Winter", "Spring", "Summer"];
 function canChange(current) {
-	if(current == null) return true;
+	console.log(current);
+	if(current == null || current == "") return true;
 	for (var i = 0; i < seasons.length; i++) {
 		if(current == year + " " + seasons[i] + " Schedule") return true;
 	};
@@ -94,7 +95,10 @@ function initializeCalendarName() {
 	$("#selectSemester").change(function() {
 		var current = $("#inputName").attr("value");
 		if(canChange(current)) {
+			console.log('yay');
 			$("#inputName").attr("value", year + " " + $("#selectSemester :selected").text() + " Schedule");
+		} else {
+			console.log('nay');
 		}
 	});
 }
@@ -144,7 +148,6 @@ function initializeErrorHandler() {
 *****************************************************************************************************************/
 
 function setTextAreaSize() {
-	console.log('resize');
 	$("#textAreaCourseData").css("min-height", $("#right").outerHeight() - 52);
 }
 

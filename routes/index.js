@@ -13,11 +13,12 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'UofC Schedule to Google Calendar' });
 });
 
-var lastBody;
+//var lastBody;
 
 /* POST to the makecalendar page. */
 router.post('/makecalendar', function(req, res, next) {
-	lastBody = req.body;
+	//lastBody = req.body;
+	req.session.courseData = req.body;
 	res.redirect(gauth.url);
 });
 
@@ -31,9 +32,11 @@ router.get('/auth/google/callback', function(req, res) {
 		}
 		gauth.client.credentials = token;
 
-		var thisBody = lastBody;
-		lastBody = null;
-		makecalendar(gauth.client, thisBody, function(result) {
+		//var thisBody = lastBody;
+		//lastBody = null;
+		var courseData = req.session.courseData;
+		req.session = null;
+		makecalendar(gauth.client, courseData, function(result) {
 			if(result.ok) {
 				console.log("Created calendar with no errors.")
 			} else {

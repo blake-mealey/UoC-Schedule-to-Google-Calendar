@@ -30,10 +30,9 @@ block content
 					input#buttonSubmit(type="button" value="Make Calendar")
 					div#error
 	.page-content
-		h1 How to Use
-		p.
-			Tutorial goes here.
-
+		include:markdown-it ./../public/markdown/about.md
 block scripts
 	script(type="text/javascript" src="/javascripts/jquery-1.11.3.min.js")
 	script(type="text/javascript" src="/javascripts/initializeApp.js")
+	script(type="text/javascript" src="/javascripts/imagesetup.js")
+	script(type="text/javascript" src="/javascripts/magnificpopup.js")

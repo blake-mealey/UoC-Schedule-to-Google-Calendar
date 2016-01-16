@@ -189,9 +189,9 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 	var year = new Date().getFullYear();
 
 	function lastSunday(month, day) {
-		var d = new Date(year, month, day);
+		var d = new Date(year, month - 1, day);
 		d.setDate(d.getDate() - d.getDay());
-		return d;
+		return d.getDate();
 	}
 	
 	semesters = {

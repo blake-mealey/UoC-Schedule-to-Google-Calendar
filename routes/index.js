@@ -10,14 +10,18 @@ require('./../google-auth')(function(res) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	res.render('index', { title: 'UofC Schedule to Google Calendar' });
+	var locals = {
+		title: 'UofC Schedule to Google Calendar',
+		display: req.session.result ? (req.session.result.ok != null).toString() : null,
+		ok: req.session.result ? req.session.result.ok.toString() : null,
+		error: req.session.result ? req.session.result.error : null
+	}
+	req.session = null;
+	res.render('index', locals);
 });
-
-//var lastBody;
 
 /* POST to the makecalendar page. */
 router.post('/makecalendar', function(req, res, next) {
-	//lastBody = req.body;
 	req.session.courseData = req.body;
 	res.redirect(gauth.url);
 });
@@ -32,16 +36,10 @@ router.get('/auth/google/callback', function(req, res) {
 		}
 		gauth.client.credentials = token;
 
-		//var thisBody = lastBody;
-		//lastBody = null;
 		var courseData = req.session.courseData;
-		req.session = null;
 		makecalendar(gauth.client, courseData, function(result) {
-			if(result.ok) {
-				console.log("Created calendar with no errors.")
-			} else {
-				console.log("Failed to created calendar: " + result.error);
-			}
+			req.session.courseData = null;
+			req.session.result = result;
 			res.redirect('/');
 		});
 	});

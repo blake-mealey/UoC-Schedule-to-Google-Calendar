@@ -28,7 +28,7 @@ block content
 				ul.colorContainer#event
 				div#submission
 					input#buttonSubmit(type="button" value="Make Calendar")
-					div#error
+					div#error(data-display=display data-ok=ok data-error=error)
 	.page-content
 		include:markdown-it ./../public/markdown/about.md
 block scripts

@@ -178,6 +178,6 @@ function initializeTextAreaResizer() {
 $(document).ready(function() {
 	initializeColors();
 	initializeCalendarName();
-	initializeTextAreaResizer();
+	//initializeTextAreaResizer();
 	initializeErrorHandler();
 });

@@ -17,7 +17,7 @@ textarea {
 	font-family: 'Roboto', "Source Sans Pro", Helvetica, Arial, sans-serif;
 	resize: none;
 	width: 100%;
-	min-height: 470px;
+	min-height: 250px;
 	color: rgba(0,0,0, 0.7);
 	font-size: 16px;
 	border: 1px solid rgba(0,0,0, 0.12);
@@ -52,27 +52,6 @@ label > input:checked + div {
 
 input[type="button"] {
 	margin-top: 43px;
-	padding: 10px;
-	background:none;
-	border:0;
-	outline: none;
-
-	-webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.4);
-	-moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.4);
-	box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.4);
-	border-radius: 3px;
-
-	-webkit-transition:all .1s ease-out;
-	-moz-transition:all .1s ease-out;
-	-ms-transition:all .1s ease-out;
-	-o-transition:all .1s ease-out;
-	transition:all .1s ease-out;
-}
-
-input[type="button"]:hover {
-	-webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.4);
-	-moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.4);
-	box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.4);
 }
 
 .colorContainer {

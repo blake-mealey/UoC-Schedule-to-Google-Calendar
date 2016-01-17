@@ -1,0 +1,12 @@
+extends layout
+
+block css
+	link(rel='stylesheet', href='/stylesheets/error.css')
+	link(rel='stylesheet', href='/stylesheets/style.css')
+
+block content
+	#error-header
+		#top
+			h1.title Error 503
+	#bottom
+		h2.subtitle You caught us at a bad time, but we will be back shortly!

@@ -1,8 +1,8 @@
-# About
+## About
 
 This is a little app I made to make creating Google Calendars, which I use daily, from my UofC schedule, which is impossible to use, a lot easier. Even if I only have to make the conversion twice a year, I was lazy enough to spend a week making this. You can check out the code on [GitHub](https://github.com/blake-mealey/UofC-Schedule-to-Google-Calendar) (first web app, don't judge), as well as the readme for the project which contains information about planned future features/similar projects.
 
-# How to Use
+## How to Use
 
 First of all, if you aren't a UofC student with access to your [my.ucalgary.ca](http://my.ucalgary.ca) page, you might as well just leave now. If you're still here, head over to your ucalgary page and then click the "Enroll" button. When you scroll down you should find a table that looks something like this:
 

@@ -1,14 +1,26 @@
 extends layout
 
+block css
+	link(rel='stylesheet', href='/stylesheets/style.css')
+	link(rel='stylesheet', href='/stylesheets/app.css')
+	link(rel='stylesheet', href='/stylesheets/magnificpopup.css')
+
 block content
-	.page-content
-		h1= title
-		form#formMakeCalendar(name="makecalendar", method="post", action="/makecalendar")
-			#left
-				h2 Course Information
-				textarea#textAreaCourseData(name="coursedata")
-			#right
-				h2 Semester
+	#header
+		h1.title= title
+		h5.subtitle Created by Blake Mealey
+	#page-content-wrapper
+		//.page-content
+			h1 First Header
+			h2 Second Header
+			h3 Third Header
+			h4 Fourth Header
+			h5 Fifth Header
+			h6 Sixth Header
+		.page-content
+			h2 Make your Calendar
+			form#formMakeCalendar(name="makecalendar", method="post", action="/makecalendar")
+				h4 Semester
 				.mdl-selectfield
 					select#selectSemester.browser-default(name="selectsemester")
 						option(value="none" disabled selected) Select One
@@ -16,21 +28,28 @@ block content
 						option(value="winter") Winter
 						option(value="spring") Spring
 						option(value="summer") Summer
-				h2 Calendar Name
+
+				h4 Calendar Name
 				.mdl-textfield
 					input#inputName(name="calendarname", type="text")
-				h2 Colours
-				h3 Calendar Colour
+
+				h4 Colours
+
+				h6 Calendar Colour
 				ul.colorContainer#calendar
-				h3 Lecture Colour
+				h6 Lecture Colour
 				ul.colorContainer#event
-				h3 Tutorial/Lab Colour
+				h6 Tutorial/Lab Colour
 				ul.colorContainer#event
+
+				h4 Course Information
+				textarea#textAreaCourseData(name="coursedata")
+
 				div#submission
-					input#buttonSubmit(type="button" value="Make Calendar")
+					input#buttonSubmit(type="button" value="MAKE CALENDAR")
 					div#error(data-display=display data-ok=ok data-error=error)
-	.page-content
-		include:markdown-it ./../public/markdown/about.md
+		.page-content
+			include:markdown-it ./../public/markdown/about.md
 block scripts
 	script(type="text/javascript" src="/javascripts/jquery-1.11.3.min.js")
 	script(type="text/javascript" src="/javascripts/initializeApp.js")

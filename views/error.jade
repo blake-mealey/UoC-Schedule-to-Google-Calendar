@@ -1,9 +1,16 @@
 extends layout
 
 block css
+	link(rel='stylesheet', href='/stylesheets/error.css')
 	link(rel='stylesheet', href='/stylesheets/style.css')
 
 block content
-	h1= message
-	h2= error.status
-	pre #{error.stack}
+	#error-header
+		#top
+			h1.title Error #{error.status}
+	#bottom
+		a#home(href="/")
+			i(class="material-icons md-light md-48") home
+			p HOME
+		h2.subtitle= message
+		pre #{error.stack}

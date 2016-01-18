@@ -40,7 +40,7 @@ router.get('/auth/google/callback', function(req, res) {
 		makecalendar(gauth.client, courseData, function(result) {
 			req.session.courseData = null;
 			req.session.result = result;
-			res.redirect('/');
+			res.redirect('/#submission');
 		});
 	});
 });

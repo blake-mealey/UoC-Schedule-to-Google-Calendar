@@ -55,11 +55,14 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
 	res.status(err.status || 500);
 	if(err.status == 404) {
-		res.render('notfound');
+		res.render('notfound', {
+			title: "Error 404"
+		});
 	} else {
 		res.render('error', {
 			message: err.message,
-			error: {status: err.status}
+			error: {status: err.status},
+			title: "Error " + err.status
 		});
 	}
 });

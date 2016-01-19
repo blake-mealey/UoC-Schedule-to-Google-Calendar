@@ -178,10 +178,12 @@ a:active {
 }
 
 #header {
-	width: 100%;
 	background-color: #0097a7;
 	color: #ffffff;
-	padding: 25px 50px 150px 50px;
+	padding: 25px 80px 150px 80px;
+	-webkit-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.4);
+	box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.4);
 }
 
 #header .title, #header .subtitle {
@@ -194,8 +196,20 @@ a:active {
 	padding-left: 20px;
 }
 
+#footer {
+	width: 100%;
+	font-size: 24px;
+	font-weight: 300;
+
+	margin-top: -110px;
+	height: 100px;
+
+	text-align: center;
+	line-height: 100px;
+}
+
 .page-content {
-	margin: -100px 20px 120px 20px;
+	margin: -100px 0 120px 0;
 	padding: 25px;
 	background: #FFF;
 	border-radius: 2px;
@@ -210,8 +224,19 @@ a:active {
 	#header .title, #header .subtitle, #page-content-wrapper {
 		width: 100%;
 	}
+	#header {
+		padding: 25px 20px 150px 20px;
+	}
 	.page-content {
 		margin: -100px 10px 120px 10px;
+	}
+	#footer {
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+	h1 {
+		font-size: 80px;
+		line-height: 80px;
 	}
 }
 
@@ -246,93 +271,4 @@ a:active {
 	left: 0;
 	width: 100%;
 	height: 100%;
-}
-
-.sidebar-nav {
-	width: 350px;
-	list-style-type: none;
-	margin: 40px 0px 0px 0px;
-	padding: 0;
-}
-
-.sidebar-nav li {
-	margin-top: -5px;
-	display: inline;
-	white-space: nowrap;
-}
-
-/*.sidebar-nav li:after {
-	content: " \00b7";
-	font-size: 40px;
-}
-
-.sidebar-nav li.nobullet:after {
-	content: none;
-}*/
-
-.sidebar-nav li a {
-	padding: .2em .5em;
-	color: #FFF;
-}
-
-.sidebar-nav li a:link {
-	text-decoration: none;
-	color: #FFF;
-}
-
-.sidebar-nav li a:visited {
-	text-decoration: none;
-	color: #FFF;
-}
-
-.sidebar-nav li a:hover {
-	text-decoration: none;
-	color: #E6E6E6;
-}
-
-.sidebar-nav li a:active {
-	text-decoration: none;
-	color: #FFF;
-}
-
-#current-page {
-	font-weight: bold;
-}
-
-#profile-pic {
-	display: inline-block;
-	width: 154px;
-	height: 154px;
-	margin-top: 70px;
-	border-radius: 77px;
-	-webkit-border-radius: 77px;
-	-moz-border-radius: 77px;
-	background: #006064;
-}
-
-#profile-pic img {
-	width: 140px;
-	height: 140px;
-	margin-top: 7px;
-	border-radius: 70px;
-	-webkit-border-radius: 70px;
-	-moz-border-radius: 70px;
-}
-
-@media (max-width: 767px) {
-	#wrapper {
-		padding-left: 0;
-	}
-	#sidebar-wrapper {
-		left: 0;
-	}
-	#wrapper.active {
-		position: relative;
-		left: 350px;
-	}
-	#wrapper.active #sidebar-wrapper {
-		left: 350px;
-		width: 350px;
-		transition: all 0.4s ease 0s;
-	}
 }

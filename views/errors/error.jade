@@ -1,0 +1,18 @@
+extends ./../layout
+
+block css
+	link(rel='stylesheet', href='/stylesheets/error.css')
+	link(rel='stylesheet', href='/stylesheets/style.css')
+
+block content
+	#error-header
+		.section-wrapper
+			#top
+				h1.title Error #{error.status}
+	.section-wrapper
+		#bottom
+			a#home(href="/")
+				i(class="material-icons md-light md-48") home
+				p HOME
+			h2.subtitle=message
+			pre #{error.stack}

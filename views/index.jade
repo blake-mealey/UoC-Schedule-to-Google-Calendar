@@ -21,6 +21,10 @@ block content
 			h2 Make your Calendar
 			form#formMakeCalendar(name="makecalendar", method="post", action="/makecalendar")
 				h4 Semester
+					i.input-help
+						i(class="material-icons" data-message="The semester option tells the app which dates to add your events to. It also fills in the calendar name option with some default values if you haven't already edited that option.") help_outline
+						div.
+							The semester option tells the app which dates to add your events to. It also fills in the calendar name option with some default values if you haven't already edited that option.
 				.mdl-selectfield
 					select#selectSemester.browser-default(name="selectsemester")
 						option(value="none" disabled selected) Select One

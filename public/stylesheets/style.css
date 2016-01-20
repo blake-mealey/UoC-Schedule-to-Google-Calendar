@@ -59,6 +59,44 @@ h6 {
 	font-weight: 400;
 }
 
+.input-help {
+	margin-left: 20px;
+	top: 5px;
+	position: relative
+}
+
+.input-help i {
+	opacity: 0.5;
+
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+.input-help i:hover {
+	opacity: 0.9;
+}
+
+.input-help div {
+	opacity: 0;
+	background: rgba(0, 0, 0, 0);
+	color: #ffffff;
+
+	font-style: normal;
+	font-size: 16px;
+	line-height: 16px;;
+	word-wrap: normal;
+
+	position: absolute;
+	left: 30px;
+	top: 0px;
+}
+
+.input-help:hover div {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0.5);
+}
+
 .material-icons.md-18 { font-size: 18px; }
 .material-icons.md-24 { font-size: 24px; }
 .material-icons.md-36 { font-size: 36px; }
@@ -197,7 +235,6 @@ a:active {
 }
 
 #footer {
-	width: 100%;
 	font-size: 24px;
 	font-weight: 300;
 
@@ -206,6 +243,12 @@ a:active {
 
 	text-align: center;
 	line-height: 100px;
+}
+
+#footer span {
+	display: inline-block;
+	vertical-align: middle;
+	line-height: normal;
 }
 
 .page-content {

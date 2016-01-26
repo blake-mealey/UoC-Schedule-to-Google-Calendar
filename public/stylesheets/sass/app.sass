@@ -1,0 +1,140 @@
+//**************************************************************************************//
+//									COMMON MIX-INS										//
+//**************************************************************************************//
+
+=border-radius($radius)
+	-webkit-border-radius: $radius
+	-moz-border-radius: $radius
+	-ms-border-radius: $radius
+	border-radius: $radius
+
+=box-shadow($x, $y, $blur, $spread, $opacity)
+	-webkit-box-shadow: $x $y $blur $spread rgba(0, 0, 0, $opacity)
+	-moz-box-shadow: $x $y $blur $spread rgba(0, 0, 0, $opacity)
+	-ms-box-shadow: $x $y $blur $spread rgba(0, 0, 0, $opacity)
+	box-shadow: $x $y $blur $spread rgba(0, 0, 0, $opacity)
+
+=transition($args...)	//property, duration, timing-function, delay
+	-webkit-transition: $args
+	-moz-transition: $args
+	-ms-transition: $args
+	-o-transition: $args
+	transition: $args
+
+//**************************************************************************************//
+//										CSS												//
+//**************************************************************************************//
+
+#left
+	width: 50%
+	float: left
+	padding-right: 20px
+
+#right
+	margin-left: 50%
+	padding-left: 20px
+
+.clear
+	clear: both
+
+textarea
+	font-family: 'Roboto', "Source Sans Pro", Helvetica, Arial, sans-serif
+	resize: none
+	width: 100%
+	min-height: 250px
+	color: rgba(0,0,0, 0.7)
+	font-size: 16px
+	border: 1px solid rgba(0,0,0, 0.12)
+
+textarea:focus
+	outline: none
+	border: 1px solid rgba(0,0,0, 0.3)
+
+label > input
+	visibility: hidden
+	position: absolute
+
+label > input + div
+	cursor: pointer
+	border: 3px solid white
+	border-radius: 5px
+	width: 18px
+	height: 18px
+
+label > input:checked + div
+	border: 3px solid transparent
+	+border-radius(2px)
+	+box-shadow(0px, 0px, 3px, 0px, 0.4)
+
+input[type="button"]
+	margin-top: 43px
+
+.colorContainer
+	list-style-type: none
+	margin: 0
+	padding: 0
+	overflow: hidden
+	li
+		float: left
+		label
+			display: block
+			padding: 5px
+
+#submission
+	width: 100%
+	div
+		display: inline-block
+
+#error
+	margin-left: 30px
+	padding: 20px
+	background-color: #f44336
+	color: #FFFFFF
+	width: auto
+	opacity: 0
+	+transition(all, .2s, ease-out)
+
+/* ==========  Select Field ========== */
+/* Style Select Field */
+select, input[type="text"]
+	font-family: inherit
+	background-color: transparent
+	width: 100%
+	padding: 4px 0
+	font-size: 16px
+	color: rgba(0,0,0,0.7)
+	border: none
+	border-bottom: 1px solid rgba(0,0,0,0.12)
+
+/* Remove focus */
+select:focus, input[type="text"]:focus
+	outline: none
+	border-bottom: 1px solid rgba(0,0,0, 0.3)
+
+/* Use custom arrow */
+.mdl-selectfield select
+	-webkit-appearance: none
+	-moz-appearance: none
+	-o-appearance: none
+	appearance: none
+
+.mdl-selectfield
+	max-width: 250px
+	position: relative
+.mdl-selectfield:after
+	position: absolute
+	top: 0.75em
+	right: 0.5em
+	/* Styling the down arrow */
+	width: 0
+	height: 0
+	padding: 0
+	content: ''
+	border-left: .25em solid transparent
+	border-right: .25em solid transparent
+	border-top: 0.375em solid rgba(0,0,0, 0.12)
+	pointer-events: none
+
+.mdl-textfield
+	max-width: 250px
+	position: relative

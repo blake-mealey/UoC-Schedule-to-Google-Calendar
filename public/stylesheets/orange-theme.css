@@ -1,0 +1,14 @@
+#header {
+  background-color: #EF6C00; }
+
+a {
+  text-decoration: none;
+  -webkit-transition: color, 0.4s, ease;
+  -moz-transition: color, 0.4s, ease;
+  -ms-transition: color, 0.4s, ease;
+  -o-transition: color, 0.4s, ease;
+  transition: color, 0.4s, ease; }
+  a:link, a:visited {
+    color: #ff6d00; }
+  a:hover, a:active {
+    color: #ff9100; }

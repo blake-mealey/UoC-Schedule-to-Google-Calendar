@@ -2,13 +2,12 @@ extends layout
 
 block css
 	link(rel='stylesheet', href='/stylesheets/style.css')
+	link(rel='stylesheet', href='/stylesheets/orange-theme.css')
 	link(rel='stylesheet', href='/stylesheets/app.css')
 	link(rel='stylesheet', href='/stylesheets/magnificpopup.css')
 
 block content
-	#header
-		h1.title= title
-		h5.subtitle Created by Blake Mealey
+	include includes/head.jade
 	#page-content-wrapper
 		//.page-content
 			h1 First Header
@@ -21,7 +20,7 @@ block content
 			h2 Make your Calendar
 			form#formMakeCalendar(name="makecalendar", method="post", action="/makecalendar")
 				h4 Semester
-					i.input-help
+					//i.input-help
 						i(class="material-icons" data-message="The semester option tells the app which dates to add your events to. It also fills in the calendar name option with some default values if you haven't already edited that option.") help_outline
 						div.
 							The semester option tells the app which dates to add your events to. It also fills in the calendar name option with some default values if you haven't already edited that option.

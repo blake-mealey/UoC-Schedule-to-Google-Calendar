@@ -1,0 +1,22 @@
+#header
+	background-color: #0097a7
+
+=transition($args...)	//property, duration, timing-function, delay
+	-webkit-transition: $args
+	-moz-transition: $args
+	-ms-transition: $args
+	-o-transition: $args
+	transition: $args
+
+=link($default-color, $selected-color)
+	text-decoration: none
+	+transition(color, 0.4s, ease)
+	&:link,
+	&:visited
+		color: $default-color
+	&:hover,
+	&:active
+		color: $selected-color
+
+a
+	+link(#00b8d4, #00e5ff)

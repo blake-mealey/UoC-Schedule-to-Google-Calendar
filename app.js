@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
+var sassMiddleware = require('node-sass-middleware');
 
 var routes = require('./routes/index');
 
@@ -23,6 +24,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser("MYNOTSOSECRETSECRET"));
 app.use(cookieSession({
 	keys: ['key1', 'key2']
+}));
+
+app.use(sassMiddleware({
+	src: path.join(__dirname, 'public/stylesheets/sass'),
+	dest: path.join(__dirname, 'public/stylesheets'),
+	prefix: "/stylesheets",
+	indentedSyntax: true,
+	debug: true
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));

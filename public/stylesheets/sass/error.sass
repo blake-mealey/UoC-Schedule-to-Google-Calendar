@@ -1,0 +1,91 @@
+//**************************************************************************************//
+//									COMMON MIX-INS										//
+//**************************************************************************************//
+
+=border-radius($radius)
+	-webkit-border-radius: $radius
+	-moz-border-radius: $radius
+	-ms-border-radius: $radius
+	border-radius: $radius
+
+=box-shadow($x, $y, $blur, $spread, $opacity)
+	-webkit-box-shadow: $x $y $blur $spread rgba(0, 0, 0, $opacity)
+	-moz-box-shadow: $x $y $blur $spread rgba(0, 0, 0, $opacity)
+	-ms-box-shadow: $x $y $blur $spread rgba(0, 0, 0, $opacity)
+	box-shadow: $x $y $blur $spread rgba(0, 0, 0, $opacity)
+
+=transition($args...)	//property, duration, timing-function, delay
+	-webkit-transition: $args
+	-moz-transition: $args
+	-ms-transition: $args
+	-o-transition: $args
+	transition: $args
+
+//**************************************************************************************//
+//										CSS												//
+//**************************************************************************************//
+
+#error-header
+	background-color: #0097a7
+	color: #ffffff
+	padding-top: 100px
+	+box-shadow(0px, 0px, 4px, 0px, 0.4)
+
+.section-wrapper
+	width: 60%
+	margin-left: auto
+	margin-right: auto
+
+#top
+	background-color: #EF5350
+	+box-shadow(0px, 0px, 4px, 0px, 0.4)
+	.title
+		padding: 100px
+
+#bottom
+	background-color: #ffffff
+	position: relative
+	margin-top: -20px
+	+box-shadow(0px, 0px, 4px, 0px, 0.4)
+	.subtitle
+		padding: 100px
+		width: 60%
+
+#home
+	text-decoration: none
+	background-color: #9c27b0
+	+border-radius(50px)
+	position: absolute
+	right: 75px
+	top: -50px
+	width: 100px
+	height: 100px
+	text-align: center
+	+transition(-webkit-box-shadow, .1s, ease-out)
+	+transition(-moz-box-shadow, .1s, ease-out)
+	+transition(-ms-box-shadow, .1s, ease-out)
+	+transition(box-shadow, .1s, ease-out)
+	+box-shadow(0px, 2px, 4px, 0px, 0.4)
+	&:hover
+		+box-shadow(0px, 4px, 5px, 0px, 0.4)
+	&:focus
+		+box-shadow(0px, 6px, 6px, 0px, 0.4)
+	.material-icons
+		height: 100px
+		line-height: 100px
+	p
+		margin-top: 10px
+		opacity: 0.5
+		font-weight: 400
+		line-height: 24px
+		color: #444
+
+@media (max-width: 900px)
+	.section-wrapper
+		width: 100%
+	#top,
+	#bottom
+		margin-left: 10px
+		margin-right: 10px
+	#bottom .subtitle
+		width: auto

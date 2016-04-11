@@ -16,7 +16,7 @@
     "serve-favicon": "~2.3.0",
     "googleapis": "~2.1.7",
     "google-auth-library": "~0.9.7",
-    "jstransformer-markdown-it": "~0.2.2",
+    "jstransformer-marked": "~1.0.1",
     "node-sass-middleware": "~0.9.7"
   }
 }

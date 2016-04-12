@@ -27,10 +27,8 @@ block content
 				.mdl-selectfield
 					select#selectSemester.browser-default(name="selectsemester")
 						option(value="none" disabled selected) Select One
-						option(value="fall") Fall
-						option(value="winter") Winter
-						option(value="spring") Spring
-						option(value="summer") Summer
+						each opt, index in options
+							option(value=index) !{opt}
 
 				h4 Calendar Name
 				.mdl-textfield

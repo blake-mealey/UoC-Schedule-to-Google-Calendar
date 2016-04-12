@@ -2,6 +2,9 @@ var fs = require('fs');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var calendar = google.calendar('v3');
+var MongoClient = require('mongodb').MongoClient;
+
+var dbURL = "mongodb://localhost:27017/schedule-app";
 
 var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
@@ -9,6 +12,23 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
 var creds;
+
+// get the semesters from the database
+semesters = [];
+MongoClient.connect(dbURL, function(err, db) {
+	if(err != null) { console.log("Error opening database: " + err); return; }
+
+	var cursor = db.collection("semesters").find();
+	cursor.each(function(err, semester) {
+		if(err != null) { console.log("Error getting date data from database: " + err); return; }
+
+		if(semester != null) {
+			semesters.push(semester);
+		} else {
+			db.close();
+		}
+	});
+});
 
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
@@ -18,80 +38,6 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
 	}
 	creds = JSON.parse(content);
 });
-
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- *
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
-function authorize(credentials, callback) {
-	var clientSecret = credentials.web.client_secret;
-	var clientId = credentials.web.client_id;
-	var redirectUrl = credentials.web.redirect_uris[0];
-	var auth = new googleAuth();
-	var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-
-	// Check if we have previously stored a token.
-	fs.readFile(TOKEN_PATH, function(err, token) {
-		if (err) {
-			getNewToken(oauth2Client, callback);
-		} else {
-			oauth2Client.credentials = JSON.parse(token);
-			callback(oauth2Client);
-		}
-	});
-}
-
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- *
- * @param {google.auth.OAuth2} oauth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback to call with the authorized
- *     client.
- */
-function getNewToken(oauth2Client, callback) {
-	var authUrl = oauth2Client.generateAuthUrl({
-		access_type: 'offline',
-		scope: SCOPES
-	});
-	console.log('Authorize this app by visiting this url: ', authUrl);
-	var rl = readline.createInterface({
-		input: process.stdin,
-		output: process.stdout
-	});
-	rl.question('Enter the code from that page here: ', function(code) {
-		rl.close();
-		oauth2Client.getToken(code, function(err, token) {
-			if (err) {
-				console.log('Error while trying to retrieve access token', err);
-				return;
-			}
-			oauth2Client.credentials = token;
-			storeToken(token);
-			callback(oauth2Client);
-		});
-	});
-}
-
-/**
- * Store token to disk be used in later program executions.
- *
- * @param {Object} token The token to store to disk.
- */
-function storeToken(token) {
-	try {
-		fs.mkdirSync(TOKEN_DIR);
-	} catch (err) {
-		if (err.code != 'EEXIST') {
-			throw err;
-		}
-	}
-	fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-	console.log('Token stored to ' + TOKEN_PATH);
-}
 
 function app(auth, data, callback) {
 	parseCourseData(data.coursedata, function(res) {
@@ -185,16 +131,8 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 		FR: 5,
 		SA: 6
 	}
-
-	var year = new Date().getFullYear();
-
-	function lastSunday(month, day) {
-		var d = new Date(year, month - 1, day);
-		d.setDate(d.getDate() - d.getDay());
-		return d.getDate();
-	}
 	
-	semesters = {
+	/*semesters = {
 		fall: {
 			start: {
 				month: 9,
@@ -223,9 +161,22 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 			},
 			end: year + "08" + "17" + "T000000Z"
 		}
+	}*/
+
+	//semester = semesters[Number(semester)];		// plz don't need? that would be SO AWESOME
+	semester = semesters[semester];
+	var endString = semester.year + semester.end.month + semester.end.day + "T000000Z";
+
+	//var year = new Date().getFullYear();
+	var year = semester.year;
+
+	function lastSunday(month, day) {
+		var d = new Date(year, month - 1, day);
+		d.setDate(d.getDate() - d.getDay());
+		return d.getDate();
 	}
 
-	semester = semesters[semester];
+	var startDay = lastSunday(semester.start.month, semester.start.day);
 
 	calendar.events.insert({
 		auth: auth,
@@ -243,16 +194,16 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 			location: data.meetingInfo.room,
 			start: {
 				//dateTime: "2016-01-" + (10 + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",
-				dateTime: year + "-" + semester.start.month + "-" + (semester.start.day + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",
+				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",
 				timeZone: "America/Los_Angeles"
 			},
 			end: {
 				//dateTime: "2016-01-" + (10 + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-07:00",
-				dateTime: year + "-" + semester.start.month + "-" + (semester.start.day + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-07:00",
+				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-07:00",
 				timeZone: "America/Los_Angeles"
 			},
 			//recurrence: ["RRULE:FREQ=WEEKLY;COUNT=20;WKST=SU;BYDAY=" + data.meetingInfo.days]
-			recurrence: ["RRULE:FREQ=WEEKLY;UNTIL=" + semester.end + ";WKST=SU;BYDAY=" + data.meetingInfo.days]
+			recurrence: ["RRULE:FREQ=WEEKLY;UNTIL=" + endString + ";WKST=SU;BYDAY=" + data.meetingInfo.days]
 		}
 	}, function(err, eventObject) {
 		if(err) {

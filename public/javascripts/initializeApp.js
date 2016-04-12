@@ -77,12 +77,13 @@ function initializeColors() {
 ********************************************** CALENDAR NAME SETUP ***********************************************
 *****************************************************************************************************************/
 
-var year = new Date().getFullYear();
+// OLD, HARDCODED SYSTEM
+
+/*var year = new Date().getFullYear();
 var defaultName = year + " Course Schedule";
 
 var seasons = ["Fall", "Winter", "Spring", "Summer"];
 function canChange(current) {
-	console.log(current);
 	if(current == null || current == "") return true;
 	for (var i = 0; i < seasons.length; i++) {
 		if(current == year + " " + seasons[i] + " Schedule") return true;
@@ -95,10 +96,26 @@ function initializeCalendarName() {
 	$("#selectSemester").change(function() {
 		var current = $("#inputName").attr("value");
 		if(canChange(current)) {
-			console.log('yay');
 			$("#inputName").attr("value", year + " " + $("#selectSemester :selected").text() + " Schedule");
-		} else {
-			console.log('nay');
+		}
+	});
+}*/
+
+var year = new Date().getFullYear();
+var defaultName = year + " Course Schedule";
+
+// This works??? WTH??? Well, not gonna question it xD
+function canChange(current) {
+	if(current == null) return true;
+	return true;
+}
+
+function initializeCalendarName() {
+	$("#inputName").attr("placeholder", defaultName);
+	$("#selectSemester").change(function() {
+		var current = $("#inputName").attr("value");
+		if(canChange(current)) {
+			$("#inputName").attr("value", $("#selectSemester :selected").text() + " Schedule");
 		}
 	});
 }

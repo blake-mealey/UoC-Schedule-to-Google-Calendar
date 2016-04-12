@@ -17,6 +17,9 @@
     "googleapis": "~2.1.7",
     "google-auth-library": "~0.9.7",
     "jstransformer-marked": "~1.0.1",
-    "node-sass-middleware": "~0.9.7"
+    "node-sass-middleware": "~0.9.7",
+    "mongodb": "~2.1.11",
+    "request": "~2.67.0",
+    "htmlparser2": "~3.9.0"
   }
 }

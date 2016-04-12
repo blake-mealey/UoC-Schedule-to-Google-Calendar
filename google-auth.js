@@ -74,7 +74,7 @@ function storeToken(token) {
 }
 
 module.exports = function(callback) {
-	fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+	fs.readFile('client_secret.json', function(err, content) {
 		if (err) {
 			console.log('Error loading client secret file: ' + err);
 			return;
@@ -87,14 +87,16 @@ module.exports = function(callback) {
 		var auth = new googleAuth();
 		var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
-		var authUrl = oauth2Client.generateAuthUrl({
-			access_type: 'offline',
-			scope: SCOPES
-		});
+		function getUrlFunc() {
+			return oauth2Client.generateAuthUrl({
+				access_type: 'offline',
+				scope: SCOPES
+			});
+		}
 
 		callback({
-			url: authUrl,
-			client: oauth2Client
+			"getUrl": getUrlFunc,
+			"client": oauth2Client
 		})
 	});
 }

@@ -108,7 +108,7 @@ var rowDecoders = {
 			if(dateInfo.length == 3 && Number(dateInfo[2]) != null) {
 				semester.end = {
 					"month": pad(getMonth(dateInfo[1]), 2),
-					"day": pad(Number(dateInfo[2]), 2)
+					"day": pad(Number(dateInfo[2]) + 1, 2)
 				}
 			}
 		}

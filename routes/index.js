@@ -36,7 +36,6 @@ router.get('/', function(req, res, next) {
 		ok: req.session.result ? req.session.result.ok.toString() : null,
 		error: req.session.result ? req.session.result.error : null,
 		options: semesterOptions
-		//options: ["Spring 2016", "Summer 2016", "Fall 2016", "Winter 2017", "Spring 2017", "Summer 2017"]
 	}
 	req.session = null;
 	res.render('index', locals);
@@ -60,6 +59,31 @@ router.get('/auth/google/callback', function(req, res) {
 
 		var courseData = req.session.courseData;
 		makecalendar(gauth.client, courseData, function(result) {
+			if(result.ok) {
+				var date = new Date();
+
+				var usageInfo = courseData;
+				usageInfo.coursedata = null;
+				usageInfo.courseData = result.parsedData
+				usageInfo.date = {
+					"day": date.getDate(),
+					"month": date.getMonth() + 1,
+					"year": date.getFullYear(),
+					"hour": date.getHours(),
+					"minute": date.getMinutes()
+				}
+
+				MongoClient.connect(dbURL, function(err, db) {
+					if(err != null) { console.log("Error opening database: " + err); return; }
+
+					db.collection("usage").insertOne(usageInfo, function(err, results) {
+						if(err != null) { console.log("Error saving usage info to database: " + err); return; }
+
+						db.close();
+					});
+				});
+			}
+
 			req.session.courseData = null;
 			req.session.result = result;
 			res.redirect('/#submission');

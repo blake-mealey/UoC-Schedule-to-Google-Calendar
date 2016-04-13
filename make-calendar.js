@@ -77,7 +77,8 @@ function app(auth, data, callback) {
 			nextEvent();
 			callback({
 				ok: error == null,
-				error: error
+				error: error,
+				parsedData: courses
 			});
 		});
 	});
@@ -131,43 +132,10 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 		FR: 5,
 		SA: 6
 	}
-	
-	/*semesters = {
-		fall: {
-			start: {
-				month: 9,
-				day: lastSunday(9, 8)
-			},
-			end: year + "12" + "08" + "T000000Z"
-		},
-		winter: {
-			start: {
-				month: "01",
-				day: lastSunday(1, 11)
-			},
-			end: year + "04" + "13" + "T000000Z"
-		},
-		spring: {
-			start: {
-				month: "05",
-				day: lastSunday(5, 9)
-			},
-			end: year + "6" + "30" + "T000000Z"
-		},
-		summer: {
-			start: {
-				month: "07",
-				day: lastSunday(7, 5)
-			},
-			end: year + "08" + "17" + "T000000Z"
-		}
-	}*/
 
-	//semester = semesters[Number(semester)];		// plz don't need? that would be SO AWESOME
 	semester = semesters[semester];
 	var endString = semester.year + semester.end.month + semester.end.day + "T000000Z";
 
-	//var year = new Date().getFullYear();
 	var year = semester.year;
 
 	function lastSunday(month, day) {
@@ -193,16 +161,13 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 			colorId: data.classInfo.type == "Lecture" ? lectureColor : tutorialColor,
 			location: data.meetingInfo.room,
 			start: {
-				//dateTime: "2016-01-" + (10 + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",
 				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",
 				timeZone: "America/Los_Angeles"
 			},
 			end: {
-				//dateTime: "2016-01-" + (10 + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-07:00",
 				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-07:00",
 				timeZone: "America/Los_Angeles"
 			},
-			//recurrence: ["RRULE:FREQ=WEEKLY;COUNT=20;WKST=SU;BYDAY=" + data.meetingInfo.days]
 			recurrence: ["RRULE:FREQ=WEEKLY;UNTIL=" + endString + ";WKST=SU;BYDAY=" + data.meetingInfo.days]
 		}
 	}, function(err, eventObject) {

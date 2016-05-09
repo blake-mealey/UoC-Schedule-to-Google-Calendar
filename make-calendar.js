@@ -2,14 +2,10 @@ var fs = require('fs');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var calendar = google.calendar('v3');
+var plus = google.plus('v1');
 var MongoClient = require('mongodb').MongoClient;
 
 var dbURL = "mongodb://localhost:27017/schedule-app";
-
-var SCOPES = ['https://www.googleapis.com/auth/calendar'];
-var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
-		process.env.USERPROFILE) + '/.credentials/';
-var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
 var creds;
 
@@ -75,11 +71,46 @@ function app(auth, data, callback) {
 				}
 			}
 			nextEvent();
+
+			if(error != null) {
+				callback({
+					ok: false,
+					error: error
+				});
+			} else {
+				getPersonInformation(auth, function(res) {
+					var response = {
+						ok: true,
+						parsedData: courses
+					}
+
+					if(res.ok) {
+						response.userInfo = res.data
+					}
+
+					callback(response);
+				});
+			}
+		});
+	});
+}
+
+function getPersonInformation(auth, callback) {
+	plus.people.get({
+		auth: auth,
+		userId: "me"
+	}, function(err, person) {
+		if(err) {
+			console.log("Error getting person data: " + err);
 			callback({
-				ok: error == null,
-				error: error,
-				parsedData: courses
-			});
+				ok: false,
+				error: "Could not get user information."
+			})
+		}
+		
+		callback({
+			ok: true,
+			data: person
 		});
 	});
 }

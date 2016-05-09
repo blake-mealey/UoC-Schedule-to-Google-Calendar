@@ -72,6 +72,7 @@ router.get('/auth/google/callback', function(req, res) {
 					"hour": date.getHours(),
 					"minute": date.getMinutes()
 				}
+				usageInfo.userInfo = result.userInfo
 
 				MongoClient.connect(dbURL, function(err, db) {
 					if(err != null) { console.log("Error opening database: " + err); return; }

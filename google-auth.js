@@ -1,7 +1,7 @@
 var fs = require('fs');
 var googleAuth = require('google-auth-library');
 
-var SCOPES = ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/calendar'];
+var SCOPES = ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/plus.login', 'https://www.googleapis.com/auth/plus.me'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 		process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';

@@ -25,10 +25,14 @@ function getData(callback) {
 			if(err != null) { console.log("Error reading data from database: " + err); return; }
 
 			if(doc != null) {
+				var name = null
+				if(doc.userInfo) { name = doc.userInfo.displayName; }
+
 				var usage = {
-					date: new Date(doc.date.year, doc.date.month, doc.date.day, doc.date.hour, doc.date.minute).toLocaleDateString(),
+					date: doc.date.year + "/" + doc.date.month + "/" + doc.date.day,
 					calendarName: doc.calendarname,
-					courses: []
+					courses: [],
+					userName: name
 				}
 
 				for(var i = doc.courseData.length - 1; i >= 0; i--) {
@@ -55,6 +59,7 @@ getData(function(data) {
 	var formattedData = "";
 	for(var i = data.length - 1; i >= 0; i--) {				// TODO: write simple library to make this easier :P
 		var usage = data[i];
+		formattedData += usage.userName + ",";
 		formattedData += usage.date + ",";
 		formattedData += usage.calendarName + "\n";
 		for(var j = 0; j < usage.courses.length; j++) {

@@ -77,30 +77,6 @@ function initializeColors() {
 ********************************************** CALENDAR NAME SETUP ***********************************************
 *****************************************************************************************************************/
 
-// OLD, HARDCODED SYSTEM
-
-/*var year = new Date().getFullYear();
-var defaultName = year + " Course Schedule";
-
-var seasons = ["Fall", "Winter", "Spring", "Summer"];
-function canChange(current) {
-	if(current == null || current == "") return true;
-	for (var i = 0; i < seasons.length; i++) {
-		if(current == year + " " + seasons[i] + " Schedule") return true;
-	};
-	return false;
-}
-
-function initializeCalendarName() {
-	$("#inputName").attr("placeholder", defaultName);
-	$("#selectSemester").change(function() {
-		var current = $("#inputName").attr("value");
-		if(canChange(current)) {
-			$("#inputName").attr("value", year + " " + $("#selectSemester :selected").text() + " Schedule");
-		}
-	});
-}*/
-
 var year = new Date().getFullYear();
 var defaultName = year + " Course Schedule";
 

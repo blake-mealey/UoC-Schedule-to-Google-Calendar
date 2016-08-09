@@ -7,25 +7,25 @@ var dbURL = "mongodb://localhost:27017/schedule-app";
 
 // get arguments
 var outputFile = process.argv[2];
-if(outputFile == null) { outputFile = "out.csv"; }
+if(outputFile === null) { outputFile = "out.csv"; }
 
 console.log("Starting usage reader.");
 
 // read data from database
 function getData(callback) {
 	MongoClient.connect(dbURL, function(err, db) {
-		if(err != null) { console.log("Error connecting to database: " + err); return; }
+		if(err !== null) { console.log("Error connecting to database: " + err); return; }
 
 		console.log("Reading data from database.");
 
 		var cursor = db.collection("usage").find();
-		var data = []
+		var data = [];
 
 		cursor.each(function(err, doc) {
-			if(err != null) { console.log("Error reading data from database: " + err); return; }
+			if(err !== null) { console.log("Error reading data from database: " + err); return; }
 
-			if(doc != null) {
-				var name = null
+			if(doc !== null) {
+				var name = null;
 				if(doc.userInfo) { name = doc.userInfo.displayName; }
 
 				var usage = {
@@ -33,14 +33,14 @@ function getData(callback) {
 					calendarName: doc.calendarname,
 					courses: [],
 					userName: name
-				}
+				};
 
 				for(var i = doc.courseData.length - 1; i >= 0; i--) {
 					var courseData = doc.courseData[i];
 					usage.courses[usage.courses.length] = {
 						courseName: courseData.classInfo.name,
 						instructor: courseData.prof
-					}
+					};
 				}
 
 				data[data.length] = usage;
@@ -48,7 +48,7 @@ function getData(callback) {
 				db.close();
 				callback(data);
 			}
-		})
+		});
 	});
 }
 
@@ -65,10 +65,10 @@ getData(function(data) {
 		for(var j = 0; j < usage.courses.length; j++) {
 			var course = usage.courses[j];
 			formattedData += ((j + 1) + ",");
-			formattedData += course.courseName + ","
-			formattedData += course.instructor + "\n"
+			formattedData += course.courseName + ",";
+			formattedData += course.instructor + "\n";
 		}
-		formattedData += "\n"
+		formattedData += "\n";
 	}
 
 	fs.writeFile(outputFile, formattedData, function(err) {

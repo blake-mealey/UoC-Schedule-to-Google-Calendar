@@ -14,13 +14,13 @@ require('./../google-auth')(function(res) {
 // get the semester options from the database
 semesterOptions = [];
 MongoClient.connect(dbURL, function(err, db) {
-	if(err != null) { console.log("Error opening database: " + err); return; }
+	if(err !== null) { console.log("Error opening database: " + err); return; }
 
 	var cursor = db.collection("semesters").find();
 	cursor.each(function(err, semester) {
-		if(err != null) { console.log("Error getting date data from database: " + err); return; }
+		if(err !== null) { console.log("Error getting date data from database: " + err); return; }
 
-		if(semester != null) {
+		if(semester !== null) {
 			semesterOptions.push(semester.name + " " + semester.year);
 		} else {
 			db.close();
@@ -32,11 +32,11 @@ MongoClient.connect(dbURL, function(err, db) {
 router.get('/', function(req, res, next) {
 	var locals = {
 		title: 'UofC Schedule to Google Calendar',
-		display: req.session.result ? (req.session.result.ok != null).toString() : null,
+		display: req.session.result ? (req.session.result.ok !== null).toString() : null,
 		ok: req.session.result ? req.session.result.ok.toString() : null,
 		error: req.session.result ? req.session.result.error : null,
 		options: semesterOptions
-	}
+	};
 	req.session = null;
 	res.render('index', locals);
 });
@@ -64,21 +64,21 @@ router.get('/auth/google/callback', function(req, res) {
 
 				var usageInfo = courseData;
 				usageInfo.coursedata = null;
-				usageInfo.courseData = result.parsedData
+				usageInfo.courseData = result.parsedData;
 				usageInfo.date = {
 					"day": date.getDate(),
 					"month": date.getMonth() + 1,
 					"year": date.getFullYear(),
 					"hour": date.getHours(),
 					"minute": date.getMinutes()
-				}
-				usageInfo.userInfo = result.userInfo
+				};
+				usageInfo.userInfo = result.userInfo;
 
 				MongoClient.connect(dbURL, function(err, db) {
-					if(err != null) { console.log("Error opening database: " + err); return; }
+					if(err !== null) { console.log("Error opening database: " + err); return; }
 
 					db.collection("usage").insertOne(usageInfo, function(err, results) {
-						if(err != null) { console.log("Error saving usage info to database: " + err); return; }
+						if(err !== null) { console.log("Error saving usage info to database: " + err); return; }
 
 						db.close();
 					});

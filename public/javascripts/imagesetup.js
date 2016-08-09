@@ -2,7 +2,7 @@ window.onload = function() {
 	$(".page-content > p").each(function(index) {
 		if($(this).find("img").length && $(this).find("em").length) {
 			$(this).css("text-align", "center");
-			var img = $(this).find("img")
+			var img = $(this).find("img");
 			img.wrap(function() {
 				return "<a class=\"gallery-item\" href=\"" + img.attr("src") + "\"></a>";
 			});
@@ -52,4 +52,4 @@ window.onload = function() {
 			}*/
 		});
 	});
-}
+};

@@ -38,26 +38,26 @@ function pad(n, width, z) {
 
 // save semester data to the MongoDB database
 function saveSemesters(semesters, index) {
-	if(index == null) {
+	if(index === null) {
 		MongoClient.connect(dbURL, function(err, db) {
-			if(err != null) { console.log("Error saving semester data to database: " + err); return; }
+			if(err !== null) { console.log("Error saving semester data to database: " + err); return; }
 
 			db.collection("semesters").remove({}, function(err, results) {
-				if(err != null) { console.log("Error saving semester data to database: " + err); return; }
+				if(err !== null) { console.log("Error saving semester data to database: " + err); return; }
 
 				db.close();
 				saveSemesters(semesters, 0);
-			})
+			});
 		});
 	} else {
 		var semester = semesters[index];
 		console.dir(semester);
 		console.log("\n");
 		MongoClient.connect(dbURL, function(err, db) {
-			if(err != null) { console.log("Error saving semester data to database: " + err); return; }
+			if(err !== null) { console.log("Error saving semester data to database: " + err); return; }
 
 			db.collection("semesters").insertOne(semester, function(err, results) {
-				if(err != null) { console.log("Error saving semester data to dataabse: " + err); return; }
+				if(err !== null) { console.log("Error saving semester data to dataabse: " + err); return; }
 
 				db.close();
 				if(index + 1 < semesters.length) {
@@ -76,7 +76,7 @@ var rowDecoders = {
 	// header: get semester names
 	"HEADER": function(column, text) {
 		if(column > 0 && text.indexOf("/") == -1) {
-			var name = text.match(/(Spring|Summer|Fall|Winter)/g)[0]
+			var name = text.match(/(Spring|Summer|Fall|Winter)/g)[0];
 			var year = text.match(/\d+/)[0];
 
 			currentSemesterData.push({
@@ -91,11 +91,11 @@ var rowDecoders = {
 		var semester = currentSemesterData[column - (currentTableColCount == 4 ? 2 : 1)];
 		if(semester && column > 0) {
 			var dateInfo = text.split(/\W+/);
-			if(dateInfo.length == 3 && Number(dateInfo[2]) != null) {
+			if(dateInfo.length === 3 && Number(dateInfo[2]) !== null) {
 				semester.start = {
 					"month": pad(getMonth(dateInfo[1]), 2),
 					"day": pad(Number(dateInfo[2]), 2)
-				}
+				};
 			}
 		}
 	},
@@ -105,15 +105,15 @@ var rowDecoders = {
 		var semester = currentSemesterData[column - (currentTableColCount == 4 ? 2 : 1)];
 		if(semester && column > 0) {
 			var dateInfo = text.split(/\W+/);
-			if(dateInfo.length == 3 && Number(dateInfo[2]) != null) {
+			if(dateInfo.length === 3 && Number(dateInfo[2]) !== null) {
 				semester.end = {
 					"month": pad(getMonth(dateInfo[1]), 2),
 					"day": pad(Number(dateInfo[2]) + 1, 2)
-				}
+				};
 			}
 		}
 	}
-}
+};
 
 // do the parsing
 var htmlparser = require("htmlparser2");
@@ -148,9 +148,9 @@ var parser = new htmlparser.Parser({
 			currentRow++;
 		} else if(tagname === "td" && currentlyReadingCol) {
 			currentlyReadingCol = false;
-			if(currentCol == 0) {
-				if(currentRow == 0) {
-					currentRowDecoder = rowDecoders["HEADER"];
+			if(currentCol === 0) {
+				if(currentRow === 0) {
+					currentRowDecoder = rowDecoders.HEADER;
 				} else {
 					currentRowDecoder = rowDecoders[currentColText];
 				}

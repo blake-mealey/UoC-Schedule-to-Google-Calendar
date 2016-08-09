@@ -41,14 +41,14 @@ function app(auth, data, callback) {
 		courses = res.data;
 
 		for (var i = courses.length - 1; i >= 0; i--) {
-			if(courses[i].prof == null || courses[i].classInfo.type == null || courses[i].classInfo.number == null || courses[i].classInfo.id == null ||
-				courses[i].classInfo.shortName == null || courses[i].classInfo.name == null || courses[i].meetingInfo.days == null ||
-				courses[i].meetingInfo.start == null || courses[i].meetingInfo.end == null || courses[i].meetingInfo.room == null) {
+			if(courses[i].prof === null || courses[i].classInfo.type === null || courses[i].classInfo.number === null || courses[i].classInfo.id === null ||
+				courses[i].classInfo.shortName === null || courses[i].classInfo.name === null || courses[i].meetingInfo.days === null ||
+				courses[i].meetingInfo.start === null || courses[i].meetingInfo.end === null || courses[i].meetingInfo.room === null) {
 				courses.splice(i, 1);
 			}
-		};
+		}
 
-		if(courses.length == 0) {
+		if(courses.length === 0) {
 			console.log("The parser could not find any valid courses.");
 			callback({
 				ok: false,
@@ -72,7 +72,7 @@ function app(auth, data, callback) {
 			}
 			nextEvent();
 
-			if(error != null) {
+			if(error !== null) {
 				callback({
 					ok: false,
 					error: error
@@ -82,10 +82,10 @@ function app(auth, data, callback) {
 					var response = {
 						ok: true,
 						parsedData: courses
-					}
+					};
 
 					if(res.ok) {
-						response.userInfo = res.data
+						response.userInfo = res.data;
 					}
 
 					callback(response);
@@ -105,7 +105,7 @@ function getPersonInformation(auth, callback) {
 			callback({
 				ok: false,
 				error: "Could not get user information."
-			})
+			});
 		}
 		
 		callback({
@@ -162,7 +162,7 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 		TH: 4,
 		FR: 5,
 		SA: 6
-	}
+	};
 
 	semester = semesters[semester];
 	var endString = semester.year + semester.end.month + semester.end.day + "T000000Z";
@@ -278,12 +278,12 @@ function parseCourseData(courseData, callback) {
 					courses[current].classInfo.id = line.substring(1, line.length - 1);
 					break;
 				case 2:
-					courses[current].classInfo.type = line.substring(line.indexOf("(") + 1, line.indexOf(")"))
+					courses[current].classInfo.type = line.substring(line.indexOf("(") + 1, line.indexOf(")"));
 					courses[current].classInfo.name = line.substring(0, line.indexOf("(") - 1);
 					break;
 				case 3:
 					if(line != "TBA") {
-						var res = line.split(" ");
+						res = line.split(" ");
 						var days = res[0].match(/[A-Z][a-z]/g);
 						for(var k = 0; k < days.length; k++) {
 							days[k] = days[k].toUpperCase();
@@ -320,4 +320,4 @@ function parseCourseData(courseData, callback) {
 
 module.exports = function(auth, data, callback) {
 	app(auth, data, callback);
-}
+};

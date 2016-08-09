@@ -42,7 +42,7 @@ var colors = {
 		"10": "#51b749",
 		"11": "#dc2127"
 	}
-}
+};
 
 var defaults = [7, 1, 2];
 
@@ -51,7 +51,7 @@ var block = "<li id='temp'>" +
 					"<input type='radio'>" +
 					"<div></div>" +
 				"</label>" +
-			"</li>"
+			"</li>";
 
 var count = 0;
 
@@ -82,7 +82,7 @@ var defaultName = year + " Course Schedule";
 
 // This works??? WTH??? Well, not gonna question it xD
 function canChange(current) {
-	if(current == null) return true;
+	if(current === null) return true;
 	return true;
 }
 
@@ -105,7 +105,7 @@ var displayVisible = false;
 function displaySuccess(text, timeout) {
 	if(displayVisible) return;
 	displayVisible = true;
-	$("#error").text(text).css("background-color", "#4caf50").css("opacity", 1)
+	$("#error").text(text).css("background-color", "#4caf50").css("opacity", 1);
 	window.setTimeout(hideDisplay, timeout || 3000);
 }
 
@@ -125,7 +125,7 @@ function hideDisplay() {
 function initializeErrorHandler() {
 	if($("#error").attr("data-display") == "true") {
 		if($("#error").attr("data-ok") == "true") {
-			displaySuccess("Calendar successfully created!")
+			displaySuccess("Calendar successfully created!");
 		} else {
 			displayError($("#error").attr("data-error"));
 		}

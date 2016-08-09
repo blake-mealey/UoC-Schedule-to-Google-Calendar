@@ -97,6 +97,6 @@ module.exports = function(callback) {
 		callback({
 			"getUrl": getUrlFunc,
 			"client": oauth2Client
-		})
+		});
 	});
-}
+};

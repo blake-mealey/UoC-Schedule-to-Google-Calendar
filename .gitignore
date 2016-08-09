@@ -86,3 +86,10 @@ $RECYCLE.BIN/
 client_secret.json
 data.in
 out.csv
+
+# IDE Stuff
+# =========================
+
+# Sublime Text Project
+*.sublime-workspace
+*.sublime-project

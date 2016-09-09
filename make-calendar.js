@@ -12,13 +12,13 @@ var creds;
 // get the semesters from the database
 semesters = [];
 MongoClient.connect(dbURL, function(err, db) {
-	if(err != null) { console.log("Error opening database: " + err); return; }
+	if(err !== null) { console.log("Error opening database: " + err); return; }
 
 	var cursor = db.collection("semesters").find();
 	cursor.each(function(err, semester) {
-		if(err != null) { console.log("Error getting date data from database: " + err); return; }
+		if(err !== null) { console.log("Error getting date data from database: " + err); return; }
 
-		if(semester != null) {
+		if(semester !== null) {
 			semesters.push(semester);
 		} else {
 			db.close();
@@ -41,9 +41,9 @@ function app(auth, data, callback) {
 		courses = res.data;
 
 		for (var i = courses.length - 1; i >= 0; i--) {
-			if(courses[i].prof === null || courses[i].classInfo.type === null || courses[i].classInfo.number === null || courses[i].classInfo.id === null ||
-				courses[i].classInfo.shortName === null || courses[i].classInfo.name === null || courses[i].meetingInfo.days === null ||
-				courses[i].meetingInfo.start === null || courses[i].meetingInfo.end === null || courses[i].meetingInfo.room === null) {
+			if(courses[i].prof === undefined || courses[i].classInfo.type === undefined || courses[i].classInfo.number === undefined || courses[i].classInfo.id === undefined ||
+					courses[i].classInfo.shortName === undefined || courses[i].classInfo.name === undefined || courses[i].meetingInfo.days === undefined ||
+					courses[i].meetingInfo.start === undefined || courses[i].meetingInfo.end === undefined || courses[i].meetingInfo.room === undefined) {
 				courses.splice(i, 1);
 			}
 		}
@@ -61,7 +61,7 @@ function app(auth, data, callback) {
 			if(!res.ok) { callback(res); return; }
 			calendarObject = res.data;
 
-			var error;
+			var error = null;
 			var index = 0;
 			function nextEvent(res) {
 				if(index > 0 && !res.ok) error = res.error;

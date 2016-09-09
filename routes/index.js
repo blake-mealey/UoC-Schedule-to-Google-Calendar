@@ -32,7 +32,7 @@ MongoClient.connect(dbURL, function(err, db) {
 router.get('/', function(req, res, next) {
 	var locals = {
 		title: 'UofC Schedule to Google Calendar',
-		display: req.session.result ? (req.session.result.ok !== null).toString() : null,
+		display: req.session.result ? (req.session.result.ok !== undefined).toString() : null,
 		ok: req.session.result ? req.session.result.ok.toString() : null,
 		error: req.session.result ? req.session.result.error : null,
 		options: semesterOptions

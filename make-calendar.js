@@ -192,12 +192,12 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 			colorId: data.classInfo.type == "Lecture" ? lectureColor : tutorialColor,
 			location: data.meetingInfo.room,
 			start: {
-				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-07:00",
-				timeZone: "America/Los_Angeles"
+				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-06:00",
+				timeZone: "America/Edmonton"
 			},
 			end: {
-				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-07:00",
-				timeZone: "America/Los_Angeles"
+				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-06:00",
+				timeZone: "America/Edmonton"
 			},
 			recurrence: ["RRULE:FREQ=WEEKLY;UNTIL=" + endString + ";WKST=SU;BYDAY=" + data.meetingInfo.days]
 		}

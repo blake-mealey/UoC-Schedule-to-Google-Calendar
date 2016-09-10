@@ -21,6 +21,6 @@
     "node-sass-middleware": "~0.9.7",
     "request": "~2.67.0",
     "serve-favicon": "~2.3.0",
-    "uc-date-scraper": "^1.0.4"
+    "uc-date-scraper": "^1.0.5"
   }
 }

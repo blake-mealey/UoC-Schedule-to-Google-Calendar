@@ -1,10 +1,10 @@
 var express = require('express');
-var MongoClient = require('mongodb').MongoClient;
 var router = express.Router();
+var MongoClient = require('mongodb').MongoClient;
+var makecalendar = require('./../make-calendar');
 
 var dbURL = "mongodb://localhost:27017/schedule-app";
 
-var makecalendar = require('./../make-calendar');
 
 var gauth;
 require('./../google-auth')(function(res) {
@@ -13,19 +13,11 @@ require('./../google-auth')(function(res) {
 
 // get the semester options from the database
 semesterOptions = [];
-MongoClient.connect(dbURL, function(err, db) {
-	if(err !== null) { console.log("Error opening database: " + err); return; }
-
-	var cursor = db.collection("semesters").find();
-	cursor.each(function(err, semester) {
-		if(err !== null) { console.log("Error getting date data from database: " + err); return; }
-
-		if(semester !== null) {
-			semesterOptions.push(semester.name + " " + semester.year);
-		} else {
-			db.close();
-		}
-	});
+makecalendar.getSemesters(function(semesters) {
+	for(var i = 0; i < semesters.length; i++) {
+		var semester = semesters[i];
+		semesterOptions.push(semester.name + " " + semester.year);
+	}
 });
 
 /* GET home page. */
@@ -58,7 +50,7 @@ router.get('/auth/google/callback', function(req, res) {
 		gauth.client.credentials = token;
 
 		var courseData = req.session.courseData;
-		makecalendar(gauth.client, courseData, function(result) {
+		makecalendar.make(gauth.client, courseData, function(result) {
 			if(result.ok) {
 				var date = new Date();
 

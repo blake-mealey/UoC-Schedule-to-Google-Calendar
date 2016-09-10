@@ -80,19 +80,11 @@ function initializeColors() {
 var year = new Date().getFullYear();
 var defaultName = year + " Course Schedule";
 
-// This works??? WTH??? Well, not gonna question it xD
-function canChange(current) {
-	if(current === null) return true;
-	return true;
-}
-
 function initializeCalendarName() {
 	$("#inputName").attr("placeholder", defaultName);
 	$("#selectSemester").change(function() {
 		var current = $("#inputName").attr("value");
-		if(canChange(current)) {
-			$("#inputName").attr("value", $("#selectSemester :selected").text() + " Schedule");
-		}
+		$("#inputName").attr("value", $("#selectSemester :selected").text() + " Schedule");
 	});
 }
 

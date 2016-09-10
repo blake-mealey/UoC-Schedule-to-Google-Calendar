@@ -11,15 +11,16 @@
     "cookie-session": "~2.0.0-alpha.1",
     "debug": "~2.2.0",
     "express": "~4.13.1",
-    "jade": "~1.11.0",
-    "morgan": "~1.6.1",
-    "serve-favicon": "~2.3.0",
-    "googleapis": "~2.1.7",
     "google-auth-library": "~0.9.7",
+    "googleapis": "~2.1.7",
+    "htmlparser2": "~3.9.0",
+    "jade": "~1.11.0",
     "jstransformer-marked": "~1.0.1",
-    "node-sass-middleware": "~0.9.7",
     "mongodb": "~2.1.11",
+    "morgan": "~1.6.1",
+    "node-sass-middleware": "~0.9.7",
     "request": "~2.67.0",
-    "htmlparser2": "~3.9.0"
+    "serve-favicon": "~2.3.0",
+    "uc-date-scraper": "^1.0.2"
   }
 }

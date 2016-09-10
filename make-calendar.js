@@ -3,28 +3,21 @@ var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var calendar = google.calendar('v3');
 var plus = google.plus('v1');
-var MongoClient = require('mongodb').MongoClient;
-
-var dbURL = "mongodb://localhost:27017/schedule-app";
+var scraper = require('uc-date-scraper');
 
 var creds;
+var semesters;
 
-// get the semesters from the database
-semesters = [];
-MongoClient.connect(dbURL, function(err, db) {
-	if(err !== null) { console.log("Error opening database: " + err); return; }
-
-	var cursor = db.collection("semesters").find();
-	cursor.each(function(err, semester) {
-		if(err !== null) { console.log("Error getting date data from database: " + err); return; }
-
-		if(semester !== null) {
-			semesters.push(semester);
-		} else {
-			db.close();
-		}
-	});
-});
+function getSemesters(cb) {
+	if(semesters === undefined) {
+		scraper(null, function(data) {
+			semesters = data;
+			cb(semesters);
+		});
+	} else {
+		cb(semesters);
+	}
+}
 
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
@@ -61,36 +54,39 @@ function app(auth, data, callback) {
 			if(!res.ok) { callback(res); return; }
 			calendarObject = res.data;
 
-			var error = null;
-			var index = 0;
-			function nextEvent(res) {
-				if(index > 0 && !res.ok) error = res.error;
-				if(index < courses.length) {
-					makeEvent(auth, data.selectsemester, data.coloroption2, data.coloroption3, calendarObject.id, courses[index], nextEvent);
-					index++;
-				}
-			}
-			nextEvent();
-
-			if(error !== null) {
-				callback({
-					ok: false,
-					error: error
-				});
-			} else {
-				getPersonInformation(auth, function(res) {
-					var response = {
-						ok: true,
-						parsedData: courses
-					};
-
-					if(res.ok) {
-						response.userInfo = res.data;
+			getSemesters(function(semesters) {
+				var error = null;
+				var index = 0;
+				function nextEvent(res) {
+					if(index > 0 && !res.ok) error = res.error;
+					if(index < courses.length) {
+						makeEvent(auth, semesters[data.selectsemester], data.coloroption2, data.coloroption3,
+							calendarObject.id, courses[index], nextEvent);
+						index++;
 					}
+				}
+				nextEvent();
 
-					callback(response);
-				});
-			}
+				if(error !== null) {
+					callback({
+						ok: false,
+						error: error
+					});
+				} else {
+					getPersonInformation(auth, function(res) {
+						var response = {
+							ok: true,
+							parsedData: courses
+						};
+
+						if(res.ok) {
+							response.userInfo = res.data;
+						}
+
+						callback(response);
+					});
+				}
+			});
 		});
 	});
 }
@@ -153,7 +149,7 @@ function makeCalendar(auth, name, color, callback) {
 	});
 }
 
-function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data, callback) {	//TODO: Use semester
+function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data, callback) {
 	var dayNums = {
 		SU: 0,
 		MO: 1,
@@ -164,7 +160,6 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 		SA: 6
 	};
 
-	semester = semesters[semester];
 	var endString = semester.year + semester.end.month + semester.end.day + "T000000Z";
 
 	var year = semester.year;
@@ -318,6 +313,9 @@ function parseCourseData(courseData, callback) {
 	});
 }
 
-module.exports = function(auth, data, callback) {
-	app(auth, data, callback);
+module.exports = {
+	make: function(auth, data, callback) {
+		app(auth, data, callback);
+	},
+	getSemesters: getSemesters
 };

@@ -55,37 +55,53 @@ function app(auth, data, callback) {
 			calendarObject = res.data;
 
 			getSemesters(function(semesters) {
+				var semester = semesters[data.selectsemester];
+
 				var error = null;
 				var index = 0;
+
+				function next() {
+					if(error !== null) {
+						callback({
+							ok: false,
+							error: error
+						});
+					} else {
+						getPersonInformation(auth, function(res) {
+							var response = {
+								ok: true,
+								parsedData: courses
+							};
+
+							if(res.ok) {
+								response.userInfo = res.data;
+							}
+
+							callback(response);
+						});
+					}
+				}
+
+				function nextDayEvent(res) {
+					if(index > 0 && !res.ok) error = res.error;
+					if(index < semester.events.length) {
+						makeDayEvent(auth, semester, semester.events[index++], calendarObject.id, nextDayEvent);
+					} else {
+						next();
+					}
+				}
+
 				function nextEvent(res) {
 					if(index > 0 && !res.ok) error = res.error;
 					if(index < courses.length) {
-						makeEvent(auth, semesters[data.selectsemester], data.coloroption2, data.coloroption3,
-							calendarObject.id, courses[index], nextEvent);
-						index++;
+						makeEvent(auth, semester, data.coloroption2, data.coloroption3,
+							calendarObject.id, courses[index++], nextEvent);
+					} else {
+						index = 0;
+						nextDayEvent();
 					}
 				}
 				nextEvent();
-
-				if(error !== null) {
-					callback({
-						ok: false,
-						error: error
-					});
-				} else {
-					getPersonInformation(auth, function(res) {
-						var response = {
-							ok: true,
-							parsedData: courses
-						};
-
-						if(res.ok) {
-							response.userInfo = res.data;
-						}
-
-						callback(response);
-					});
-				}
 			});
 		});
 	});
@@ -149,6 +165,39 @@ function makeCalendar(auth, name, color, callback) {
 	});
 }
 
+function makeDayEvent(auth, semester, event, calendarId, callback) {
+	calendar.events.insert({
+		auth: auth,
+		calendarId: calendarId,
+		maxAttendees: 1,
+		sendNotifications: false,
+		supportsAttachments: false,
+		resource: {
+			summary: event.name,
+			description: event.description,
+			start: {
+				date: semester.year + "-" + event.month + "-" + event.day
+			},
+			end: {
+				date: semester.year + "-" + event.month + "-" + event.day
+			}
+		}
+	}, function(err, eventObject) {
+		if(err) {
+			console.log('Error when making an all-day event: ' + err);
+			callback({
+				ok: false,
+				error: "Could not make the all-day event " + event.name + "."
+			});
+			return;
+		}
+		callback({
+			ok: true,
+			data: eventObject
+		});
+	});
+}
+
 function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data, callback) {
 	var dayNums = {
 		SU: 0,
@@ -160,8 +209,6 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 		SA: 6
 	};
 
-	var endString = semester.year + semester.end.month + semester.end.day + "T000000Z";
-
 	var year = semester.year;
 
 	function lastSunday(month, day) {
@@ -170,7 +217,25 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 		return d.getDate();
 	}
 
-	var startDay = lastSunday(semester.start.month, semester.start.day);
+
+	var end = semester.events[semester.end];
+	var endString = year + end.month + end.day + "T000000Z";
+	var recurrence = [
+		"RRULE:FREQ=WEEKLY;UNTIL=" + endString + ";WKST=SU;BYDAY=" + data.meetingInfo.days
+	];
+
+	var exception = "EXDATE;VALUE=DATE-TIME:";
+	for(var i = 0; i < semester.holidays.length; i++) {
+		var holiday = semester.events[semester.holidays[i]];
+		var localException = year + holiday.month + holiday.day +
+			"T" + data.meetingInfo.start.replace(":", "") + "00";
+		exception += localException + (i < semester.holidays.length - 1 ? "," : "");
+	}
+	recurrence.push(exception);
+
+	var start = semester.events[semester.start];
+	var startDay = lastSunday(start.month, start.day);
+	var timeEnd = ":00.000-06:00";
 
 	calendar.events.insert({
 		auth: auth,
@@ -187,14 +252,16 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 			colorId: data.classInfo.type == "Lecture" ? lectureColor : tutorialColor,
 			location: data.meetingInfo.room,
 			start: {
-				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.start + ":00.000-06:00",
+				dateTime: year + "-" + start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) +
+					"T" + data.meetingInfo.start + timeEnd,
 				timeZone: "America/Edmonton"
 			},
 			end: {
-				dateTime: year + "-" + semester.start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) + "T" + data.meetingInfo.end + ":00.000-06:00",
+				dateTime: year + "-" + start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) +
+					"T" + data.meetingInfo.end + timeEnd,
 				timeZone: "America/Edmonton"
 			},
-			recurrence: ["RRULE:FREQ=WEEKLY;UNTIL=" + endString + ";WKST=SU;BYDAY=" + data.meetingInfo.days]
+			recurrence: recurrence
 		}
 	}, function(err, eventObject) {
 		if(err) {

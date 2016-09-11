@@ -14,7 +14,7 @@ I also intend on writing a blog post about this on my [website](http://blakemeal
 
 ## Setup
 
-If you want to run this yourself, make sure you have npm and nodejs installed and navigate to the folder you have saved the project in in your terminal, then run the commands:
+If you want to run this yourself, you will need npm, nodejs, and mongodb installed. Startup a mongo server instance with the default settings, and create a database called "scheduleapp." Then, navigate to the folder you have the project saved in with your terminal and run the commands:
 
 	npm install
 	npm start

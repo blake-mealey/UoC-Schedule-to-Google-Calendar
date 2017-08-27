@@ -2,7 +2,7 @@
 
 ## Description
 
-A web app for quickly turning a UofC schedule into a Google calendar. I have it hosted on [my site](http://schedule.blakemealey.ca). I made a [Trello page](https://trello.com/b/uSXlQs6L/uofc-course-planning-tools) which describes this project and it's goals as well as some other projects I have planned which are related to it.
+A web app for quickly turning a UofC schedule into a Google calendar. I have it hosted on [my site](http://schedule.chimerical.ca/). I made a [Trello page](https://trello.com/b/uSXlQs6L/uofc-course-planning-tools) which describes this project and it's goals as well as some other projects I have planned which are related to it.
 
 Really the only feature I did not implement which was in the original Trello plan was the by-course colour system. The main reason for not implementing it was that I could not come up with a good UI for it. I also don't think it would be particularly useful anyways, so I am ok with it not being implemented. If anyone actually uses this and someone requests this feature I may reconsider.
 

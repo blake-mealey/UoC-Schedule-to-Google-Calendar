@@ -1,9 +1,9 @@
 var fs = require('fs');
 var google = require('googleapis');
-var googleAuth = require('google-auth-library');
 var calendar = google.calendar('v3');
 var plus = google.plus('v1');
 var scraper = require('uc-date-scraper');
+var parseCourseData = require('./course-data-parser');
 
 var creds;
 var semesters;
@@ -31,7 +31,7 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
 function app(auth, data, callback) {
 	parseCourseData(data.coursedata, function(res) {
 		if(!res.ok) { callback(res); return; }
-		courses = res.data;
+		var courses = res.data;
 
 		for (var i = courses.length - 1; i >= 0; i--) {
 			if(courses[i].prof === undefined || courses[i].classInfo.type === undefined || courses[i].classInfo.number === undefined || courses[i].classInfo.id === undefined ||
@@ -119,7 +119,7 @@ function getPersonInformation(auth, callback) {
 				error: "Could not get user information."
 			});
 		}
-		
+
 		callback({
 			ok: true,
 			data: person
@@ -169,17 +169,14 @@ function makeDayEvent(auth, semester, event, calendarId, callback) {
 	calendar.events.insert({
 		auth: auth,
 		calendarId: calendarId,
-		maxAttendees: 1,
-		sendNotifications: false,
-		supportsAttachments: false,
 		resource: {
 			summary: event.name,
 			description: event.description,
 			start: {
-				date: semester.year + "-" + event.month + "-" + event.day
+				date: semester.year + "-" + event.monthStart + "-" + event.dayStart
 			},
 			end: {
-				date: semester.year + "-" + event.month + "-" + event.day
+				date: (Number(semester.year) + event.yearEndOffset) + "-" + event.monthEnd + "-" + event.dayEnd
 			}
 		}
 	}, function(err, eventObject) {
@@ -198,16 +195,22 @@ function makeDayEvent(auth, semester, event, calendarId, callback) {
 	});
 }
 
+function pad2(num) {
+	var str = ("0" + num);
+	return str.substr(str.length - 2, 2);
+}
+
+const WEEK_DAY_INDEX = {
+	SU: 0,
+	MO: 1,
+	TU: 2,
+	WE: 3,
+	TH: 4,
+	FR: 5,
+	SA: 6
+};
+
 function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data, callback) {
-	var dayNums = {
-		SU: 0,
-		MO: 1,
-		TU: 2,
-		WE: 3,
-		TH: 4,
-		FR: 5,
-		SA: 6
-	};
 
 	var year = semester.year;
 
@@ -217,32 +220,39 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 		return d.getDate();
 	}
 
+	var recurrence = [];
+	if (!data.isBlockWeek) {
+		var end = semester.events[semester.endClasses];
+		var endString = year + end.monthEnd + pad2(Number(end.dayEnd) + 1) + "T000000Z";
+		recurrence.push("RRULE:FREQ=WEEKLY;UNTIL=" + endString + ";WKST=SU;BYDAY=" + data.meetingInfo.days);
 
-	var end = semester.events[semester.end];
-	var endString = year + end.month + end.day + "T000000Z";
-	var recurrence = [
-		"RRULE:FREQ=WEEKLY;UNTIL=" + endString + ";WKST=SU;BYDAY=" + data.meetingInfo.days
-	];
-
-	var exception = "EXDATE;VALUE=DATE-TIME:";
-	for(var i = 0; i < semester.holidays.length; i++) {
-		var holiday = semester.events[semester.holidays[i]];
-		var localException = year + holiday.month + holiday.day +
-			"T" + data.meetingInfo.start.replace(":", "") + "00";
-		exception += localException + (i < semester.holidays.length - 1 ? "," : "");
+		var exception = "EXDATE;VALUE=DATE-TIME:";
+		for (var i = 0; i < semester.holidays.length; i++) {
+			var holiday = semester.events[semester.holidays[i]];
+			var isNextMonth = false;
+			var lastDay = null;
+			for (var j = 0; j < holiday.days.length; j++) {
+				var thisDay = holiday.days[j];
+				isNextMonth = isNextMonth || (lastDay && Number(thisDay) < Number(lastDay));
+				var thisYear = isNextMonth ? year + holiday.yearEndOffset : year;
+				var thisMonth = isNextMonth ? holiday.monthEnd : holiday.monthStart;
+				exception += (j == 0 && i == 0 ? "" : ",") + thisYear + thisMonth + thisDay +
+					"T" + data.meetingInfo.start.replace(":", "") + "00Z";
+				lastDay = thisDay;
+			}
+		}
+		recurrence.push(exception);
+	} else {
+		recurrence.push("RRULE:FREQ=WEEKLY;COUNT=" + data.meetingInfo.days.length + ";WKST=SU;BYDAY=" + data.meetingInfo.days);
 	}
-	recurrence.push(exception);
+	console.log(recurrence);
 
-	var start = semester.events[semester.start];
-	var startDay = lastSunday(start.month, start.day);
-	var timeEnd = ":00.000-06:00";
+	var start = semester.events[data.isBlockWeek ? semester.startTerm : semester.startClasses];
+	var startDay = lastSunday(start.monthStart, start.dayStart);
 
 	calendar.events.insert({
 		auth: auth,
 		calendarId: calendarId,
-		maxAttendees: 1,
-		sendNotifications: false,
-		supportsAttachments: false,
 		resource: {
 			summary: data.classInfo.shortName + " " + data.classInfo.type,
 			description: "Course Name: " + data.classInfo.name +
@@ -252,13 +262,13 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 			colorId: data.classInfo.type == "Lecture" ? lectureColor : tutorialColor,
 			location: data.meetingInfo.room,
 			start: {
-				dateTime: year + "-" + start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) +
-					"T" + data.meetingInfo.start + timeEnd,
+				dateTime: year + "-" + start.monthStart + "-" + pad2(startDay + WEEK_DAY_INDEX[data.meetingInfo.days[0]]) +
+					"T" + data.meetingInfo.start + ":00Z",
 				timeZone: "America/Edmonton"
 			},
 			end: {
-				dateTime: year + "-" + start.month + "-" + (startDay + dayNums[data.meetingInfo.days[0]]) +
-					"T" + data.meetingInfo.end + timeEnd,
+				dateTime: year + "-" + start.monthEnd + "-" + pad2(startDay + WEEK_DAY_INDEX[data.meetingInfo.days[0]]) +
+					"T" + data.meetingInfo.end + ":00Z",
 				timeZone: "America/Edmonton"
 			},
 			recurrence: recurrence
@@ -276,107 +286,6 @@ function makeEvent(auth, semester, lectureColor, tutorialColor, calendarId, data
 			ok: true,
 			data: eventObject
 		});
-	});
-}
-
-function parseCourseData(courseData, callback) {
-	var courses = [];
-
-	var current;
-	var counter = 0;
-
-	var i = 0;
-
-	function parseTime(time) {
-		var amIndex = time.indexOf("AM");
-		var pmIndex = time.indexOf("PM");
-		var colonIndex = time.indexOf(":");
-		var hour = Number(time.substring(0, colonIndex));
-		if(amIndex != -1) {
-			time = time.substring(0, amIndex);
-			if(hour == 12) hour = 0;
-			time = hour + ":" + time.substring(colonIndex + 1);
-		} else if(pmIndex != -1) {
-			time = time.substring(0, pmIndex);
-			if(hour != 12) hour = hour + 12;
-			time = hour + ":" + time.substring(colonIndex + 1);
-		}
-		return time;
-	}
-
-	try {
-		while(i < courseData.length) {
-			var j = courseData.indexOf("\r\n", i);
-			if(j == -1) j = courseData.length;
-			var line = courseData.substring(i, j);
-
-			var currentStep = counter % 7;
-			i = j + 2;
-			if(/^\s*$/.test(line) && currentStep < 6) {	// contains only whitespace
-				continue;
-			} else if(currentStep == 6 && line.indexOf("-") == -1) {
-				continue;
-			} else if(currentStep == 6) {
-				counter++;
-				currentStep = 0;
-			}
-
-			switch(currentStep) {
-				case 0:
-					current = courses.length;
-					var res = line.split("-");
-					if(res[1].length == 3) {
-						res[1] = res[1].substring(1);
-					}
-					courses[current] = {
-						classInfo: {
-							number: res[1],
-							shortName: res[0]
-						},
-						meetingInfo: {}
-					};
-					break;
-				case 1:
-					courses[current].classInfo.id = line.substring(1, line.length - 1);
-					break;
-				case 2:
-					courses[current].classInfo.type = line.substring(line.indexOf("(") + 1, line.indexOf(")"));
-					courses[current].classInfo.name = line.substring(0, line.indexOf("(") - 1);
-					break;
-				case 3:
-					if(line != "TBA") {
-						res = line.split(" ");
-						var days = res[0].match(/[A-Z][a-z]/g);
-						for(var k = 0; k < days.length; k++) {
-							days[k] = days[k].toUpperCase();
-						}
-						courses[current].meetingInfo.days = days;
-						courses[current].meetingInfo.start = parseTime(res[1]);
-						courses[current].meetingInfo.end = parseTime(res[3]);
-					}
-					break;
-				case 4:
-					courses[current].meetingInfo.room = line;
-					break;
-				case 5:
-					courses[current].prof = line;
-					break;
-			}
-
-			counter++;
-		}
-	} catch(err) {
-		console.log("There was an error parsing the data: " + err);
-		callback({
-			ok: false,
-			error: "Could not parse the data."
-		});
-		return;
-	}
-
-	callback({
-		ok: true,
-		data: courses
 	});
 }
 

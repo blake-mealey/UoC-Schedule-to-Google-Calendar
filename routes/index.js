@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
-var makecalendar = require('./../make-calendar');
+var makeCalendar = require('./../make-calendar');
 
 var dbURL = "mongodb://localhost:27017/schedule-app";
 
@@ -13,7 +13,7 @@ require('./../google-auth')(function(res) {
 
 // get the semester options from the database
 semesterOptions = [];
-makecalendar.getSemesters(function(semesters) {
+makeCalendar.getSemesters(function(semesters) {
 	for(var i = 0; i < semesters.length; i++) {
 		var semester = semesters[i];
 		semesterOptions.push(semester.name + " " + semester.year);
@@ -33,8 +33,8 @@ router.get('/', function(req, res, next) {
 	res.render('index', locals);
 });
 
-/* POST to the makecalendar page. */
-router.post('/makecalendar', function(req, res, next) {
+/* POST to the makeCalendar page. */
+router.post('/makeCalendar', function(req, res, next) {
 	req.session.courseData = req.body;
 	res.redirect(gauth.getUrl());
 });
@@ -50,7 +50,7 @@ router.get('/auth/google/callback', function(req, res) {
 		gauth.client.credentials = token;
 
 		var courseData = req.session.courseData;
-		makecalendar.make(gauth.client, courseData, function(result) {
+		makeCalendar.make(gauth.client, courseData, function(result) {
 			if(result.ok) {
 				var date = new Date();
 

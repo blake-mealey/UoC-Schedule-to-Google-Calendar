@@ -15,7 +15,7 @@ const LINE_TYPES = {
 const REQUIRED_TYPES = [LINE_TYPES.class, LINE_TYPES.id, LINE_TYPES.description, LINE_TYPES.times,
 	LINE_TYPES.room, LINE_TYPES.instructor];
 
-const CLASS_MATCHER = /(([A-Z]{4}) ([0-9]{3}))-[TB]?([0-9]{2})/;
+const CLASS_MATCHER = /(([A-Z]{4}) ([0-9]{3}(?:\.[0-9]{2})?))-[TB]?([0-9]{2})/;
 const CLASS_GROUPS = {
 	name: 1,
 	faculty: 2,
